@@ -1,0 +1,17 @@
+.header{
+    background-color: aqua;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    &_logo{
+        width: 100px;
+        height: 50px;
+    }
+    &_option{
+        display: flex;
+        gap: 30px;
+        justify-content: center;
+        align-items: center;
+    }
+}
