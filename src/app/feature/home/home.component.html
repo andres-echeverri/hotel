@@ -1,6 +1,6 @@
 <app-header></app-header>
 <div class="home container">
-    <app-sidebar></app-sidebar>
+    <app-sidebar (searchHotel)="usser($event)"></app-sidebar>
     <div>
         <app-slider></app-slider>
         <ng-container  [ngTemplateOutlet]="descriptionCardHotel"></ng-container>

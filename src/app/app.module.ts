@@ -10,6 +10,7 @@ import { HeaderComponent } from './component/header/header.component';
 import { SliderComponent } from './component/slider/slider.component';
 import { SwiperModule } from 'swiper/angular';
 import {NgxPaginationModule} from 'ngx-pagination';
+import { ReactiveFormsModule } from '@angular/forms';
 
 
 @NgModule({
@@ -19,13 +20,14 @@ import {NgxPaginationModule} from 'ngx-pagination';
     HomeComponent,
     SidebarComponent,
     HeaderComponent,
-    SliderComponent
+    SliderComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     SwiperModule,
-    NgxPaginationModule
+    NgxPaginationModule,
+    ReactiveFormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]
