@@ -1,0 +1,35 @@
+.form{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    box-shadow: inset 0px 0px 5px var(--gray-color);
+    padding: 10px;
+    border-radius: 10px;
+    &_item{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        &-label{
+            color: var(--secondary-color);
+        }
+        &-input{
+            width: 100%;
+            border: none;
+            box-shadow: 0px 0px 5px var(--gray-color);
+            border-radius: 10px;
+            padding: 5px 10px;
+            &:focus {
+                outline-color: var(--tertiary-color);
+              }
+        }
+    }
+    &_btn{
+        background-color: var(--gray-color);
+        width: 80%;
+        margin: 0 auto;
+        border: 1px solid var(--secondary-color);
+        font-weight: bold;
+        color: var(--primary-color);
+    }
+}

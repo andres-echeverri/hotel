@@ -1,1 +1,21 @@
 <p>sidebar works!</p>
+
+<form class="form" [formGroup]="formGroup">
+    <div class="form_item">
+        <label class="form_item-label" for="registeredOn">Fecha de entrada</label>
+        <input class="form_item-input" name="registeredOn" formControlName="registeredOn" type="date" min="2023-03-07"/>
+    </div>
+    <div class="form_item">
+        <label class="form_item-label" for="registeredOff">Fecha de salida</label>
+        <input class="form_item-input" name="registeredOff" formControlName="registeredOff" type="date" min="2023-03-07"/>
+    </div>
+    <div class="form_item">
+        <label class="form_item-label" for="person">Cantidad de personas</label>
+        <input class="form_item-input" name="person" formControlName="person" type="number" min="1" max="1000"/>
+    </div>
+    <div class="form_item">
+        <label class="form_item-label" for="destination">Destino</label>
+        <input class="form_item-input" name="destination" formControlName="destination" type="text" />
+    </div>
+    <button class="btn form_btn" (click)="search()" [disabled]="formGroup.invalid">Buscar</button>
+</form>

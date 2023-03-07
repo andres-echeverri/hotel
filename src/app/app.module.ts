@@ -7,6 +7,11 @@ import { LoginComponent } from './feature/login/login.component';
 import { HomeComponent } from './feature/home/home.component';
 import { SidebarComponent } from './component/sidebar/sidebar.component';
 import { HeaderComponent } from './component/header/header.component';
+import { SliderComponent } from './component/slider/slider.component';
+import { SwiperModule } from 'swiper/angular';
+import {NgxPaginationModule} from 'ngx-pagination';
+import { ReactiveFormsModule } from '@angular/forms';
+
 
 @NgModule({
   declarations: [
@@ -14,11 +19,15 @@ import { HeaderComponent } from './component/header/header.component';
     LoginComponent,
     HomeComponent,
     SidebarComponent,
-    HeaderComponent
+    HeaderComponent,
+    SliderComponent,
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    SwiperModule,
+    NgxPaginationModule,
+    ReactiveFormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]
