@@ -1,4 +1,4 @@
-<div class="container-fluid tourism">
+<div *ngIf="hotels.legth <= 3" class="container-fluid tourism">
     <div>
         <h2 class="section-title">{{ 'Los mejores hoteles' }}
             <hr class="line">
@@ -7,15 +7,15 @@
 
     <div>
         <swiper
-            [slidesPerView]="3"
+            [slidesPerView]="hotels.legth <= 3 ? 1:3"
             [pagination]="true"
             [spaceBetween]="15"
-            [loop]="true"
+            [loop]="hotels.legth <= 3 ? true:false"
             [freeMode]="true"
             [navigation]="true"
             class="tourism__slider swiper"
         >
-            <ng-template swiperSlide *ngFor="let place of [1,1,1,1]; let i=index">
+            <ng-template swiperSlide *ngFor="let place of [1]; let i=index">
                 <div class="card tourism__card">
                     <img class="card-img-top tourism__card-img-top" src="https://images.prismic.io/vivaair-cms/530da708-3d56-4ccf-ac79-a3937ad0e8de_barrio-san-blas.png?auto=compress,format" [alt]="'place?.place_image?.alt'">
                     <div class="card-body tourism__card-body">
