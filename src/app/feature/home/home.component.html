@@ -3,6 +3,48 @@
     <app-sidebar></app-sidebar>
     <div>
         <app-slider></app-slider>
+        <ng-container  [ngTemplateOutlet]="descriptionCardHotel"></ng-container>
     </div>
 </div>
+
+
+<ng-template #descriptionCardHotel>
+    <div>
+        <h2 class="section-title">{{ 'Cartagena' }}
+            <hr class="line">
+        </h2>
+    </div>
+    <div class="card" *ngFor="let item of [1,1,1,1,1] | paginate: { itemsPerPage: 4, currentPage: page }">
+        <div class="card_img">
+            <img src="https://images.prismic.io/vivaair-cms-test/16236f6a-df01-47f8-8917-bda9aafa1564_Foto+blog+%E2%80%93+movil.jpg?auto=compress,format" alt="">
+        </div>
+        <div class="card_description">
+            <div class="card_description_text">
+                <h4 class="card_description_text-title">El casco art HOTEL</h4>
+                <div class="card_description_text-direccion">
+                    <img  class="card_description_text-direccion-icon" src="https://images.prismic.io/vivaair-cms/47752211-5a59-40f2-9a17-43d23b21947c_destino.png?auto=compress,format" alt="">
+                    <p class="card_description_text-direccion-p">El rodadero</p>
+                </div>
+                <p class="card_description_text-p">Este hotel de 5 estrellas se encuentra a orillas del lago Nahuel Huapi y presenta una arquitectura elegante. El Casco Art Hotel exhibe 500 obras de arte exclusivas de escultores</p>
+            </div>
+            <div class="card_description_action">
+                <div>
+                    <span>Precios a partir de</span>
+                    <h6 class="card_description_action-price"><span>COP</span> 1.199.000</h6>
+                    <span>Por persona y noche</span>
+                </div>
+                <div>
+                    <button class="btn card_description_action-btn">Reservar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card_pagination">
+        <pagination-controls 
+            (pageChange)="page = $event" 
+            previousLabel=" "
+            nextLabel=" "></pagination-controls>
+    </div>
+</ng-template>
 

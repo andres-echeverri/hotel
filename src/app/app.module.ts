@@ -8,6 +8,8 @@ import { HomeComponent } from './feature/home/home.component';
 import { SidebarComponent } from './component/sidebar/sidebar.component';
 import { HeaderComponent } from './component/header/header.component';
 import { SliderComponent } from './component/slider/slider.component';
+import { SwiperModule } from 'swiper/angular';
+import {NgxPaginationModule} from 'ngx-pagination';
 
 
 @NgModule({
@@ -22,6 +24,8 @@ import { SliderComponent } from './component/slider/slider.component';
   imports: [
     BrowserModule,
     AppRoutingModule,
+    SwiperModule,
+    NgxPaginationModule
   ],
   providers: [],
   bootstrap: [AppComponent]

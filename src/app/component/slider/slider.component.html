@@ -1,1 +1,32 @@
-<p>slider works!</p>
+<div class="container-fluid tourism">
+    <div>
+        <h2 class="section-title">{{ 'Los mejores hoteles' }}
+            <hr class="line">
+        </h2>
+    </div>
+
+    <div>
+        <swiper
+            [slidesPerView]="3"
+            [pagination]="true"
+            [spaceBetween]="15"
+            [loop]="true"
+            [freeMode]="true"
+            [navigation]="true"
+            class="tourism__slider swiper"
+        >
+            <ng-template swiperSlide *ngFor="let place of [1,1,1,1]; let i=index">
+                <div class="card tourism__card">
+                    <img class="card-img-top tourism__card-img-top" src="https://images.prismic.io/vivaair-cms/530da708-3d56-4ccf-ac79-a3937ad0e8de_barrio-san-blas.png?auto=compress,format" [alt]="'place?.place_image?.alt'">
+                    <div class="card-body tourism__card-body">
+                      <h5 class="card-title tourism__card-title">{{ 'place?.place_name' }}</h5>
+                      <p class="card-text tourism__card-text">{{ 'place?.place_description' }}</p>
+                    </div>
+                    <div class="tourism__card-btn">
+                        <button>{{ 'Ver más'}}</button>
+                    </div>
+                </div>
+            </ng-template>
+        </swiper>
+    </div>
+</div>
