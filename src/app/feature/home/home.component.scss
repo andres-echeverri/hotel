@@ -2,6 +2,9 @@
     display: grid;
     justify-content: space-between;
     grid-template-columns: 20% 1fr;
+    &_container{
+        margin: 10px;
+    }
 }
 
 
@@ -11,10 +14,22 @@
         font-size: 42px;
         font-weight: bold;
         color: var(--secondary-color);
+        text-transform: capitalize;
         .line{
             color: var(--primary-color);
             border-top: 3px solid var(--primary-color);
         }
+    }
+}
+
+.alert{
+    display: flex;
+    justify-content: space-between;
+    &_filter{
+        color: var(--secondary-color);
+        cursor: pointer;
+        text-decoration: underline;
+        
     }
 }
 

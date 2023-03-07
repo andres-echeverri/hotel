@@ -1,4 +1,4 @@
-import { Component, NgZone, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, Input, NgZone, OnInit, ViewEncapsulation } from '@angular/core';
 import 'swiper/css';
 import SwiperCore , {
   Navigation,
@@ -10,8 +10,6 @@ import SwiperCore , {
   Autoplay,
   Thumbs,
   Controller,
-  SwiperOptions,
-  Swiper,
 } from 'swiper';
 import { BehaviorSubject } from 'rxjs';
 
@@ -34,20 +32,14 @@ SwiperCore.use([
 })
 export class SliderComponent implements OnInit {
 
-  slides$ = new BehaviorSubject<string[]>(['']);
-  
-  // swipers = new Swiper('.swiper', {
-  //   // configure Swiper to use modules
-  //   modules: [Navigation, Pagination],
-  // });
+  @Input() hotels: any;
 
   
-  constructor( private ngZone: NgZone) { }
+  constructor() { }
   
   ngOnInit(): void {
-    this.slides$.next(
-      Array.from({ length: 600 }).map((el, index) => `Slide ${index + 1}`)
-    );
+    console.log(this.hotels);
+    
   }
   
 

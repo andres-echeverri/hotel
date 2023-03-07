@@ -1,20 +1,21 @@
 <app-header></app-header>
+<br>
 <div class="home container">
-    <app-sidebar (searchHotel)="usser($event)"></app-sidebar>
-    <div>
-        <app-slider></app-slider>
+    <app-sidebar (searchHotel)="SearchDestination($event)"></app-sidebar>
+    <div class="home_container">
+        <app-slider [hotels]="recomendedHotel"></app-slider>
         <ng-container  [ngTemplateOutlet]="descriptionCardHotel"></ng-container>
     </div>
 </div>
 
 
 <ng-template #descriptionCardHotel>
-    <div>
-        <h2 class="section-title">{{ 'Cartagena' }}
+    <div *ngIf="search && !textError">
+        <h2 class="section-title">{{ searchedDestination }}
             <hr class="line">
         </h2>
     </div>
-    <div class="card" *ngFor="let item of [1,1,1,1,1] | paginate: { itemsPerPage: 4, currentPage: page }">
+    <div class="card" *ngFor="let item of hotel | paginate: { itemsPerPage: 4, currentPage: page }">
         <div class="card_img">
             <img src="https://images.prismic.io/vivaair-cms-test/16236f6a-df01-47f8-8917-bda9aafa1564_Foto+blog+%E2%80%93+movil.jpg?auto=compress,format" alt="">
         </div>
@@ -39,12 +40,23 @@
             </div>
         </div>
     </div>
-
-    <div class="card_pagination">
+    <div *ngIf="!textError" class="card_pagination">
         <pagination-controls 
             (pageChange)="page = $event" 
             previousLabel=" "
             nextLabel=" "></pagination-controls>
     </div>
+
+    <div class="alert">
+        <p *ngIf="textError">No se econtraron hoteles en el destino solicitado</p>
+        <span class="alert_filter" (click)="removeFilterOnClick()" *ngIf="removeFilter">Eliminar filtro</span>
+    </div>
 </ng-template>
 
+
+
+<ng-template #rooms>
+    <div>
+
+    </div>
+</ng-template>
