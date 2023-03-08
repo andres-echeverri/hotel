@@ -1,4 +1,4 @@
-<form class="form" [formGroup]="formGroup">
+<form *ngIf="!(generalInfo.loginAdmin$ | async)" class="form" [formGroup]="formGroup">
     <div class="form_item">
         <label class="form_item-label" for="registeredOn">Fecha de entrada</label>
         <input class="form_item-input" name="registeredOn" formControlName="registeredOn" type="date" min="2023-03-07"/>

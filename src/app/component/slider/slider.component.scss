@@ -10,17 +10,11 @@
         }
     }
 
-    // &-subtitle {
-    //     font-family: var(--font-primary);
-    //     font-size: 16px;
-    //     color: var(--tertiary-color);
-    // }
 }
 
 .tourism{
   position: relative;
-  margin-bottom: 5%;
-  width: 1000px;
+  margin-bottom: 2%;
 
   &::before {
       content: "";
@@ -35,13 +29,13 @@
   }
 
   &__slider {
-      height: 350px;
+      height: 470px;
 
   }
 
   &__card {
       border-radius: 15px;
-      height: 320px;
+      height: 410px;
       overflow: hidden;
       box-shadow:  5px 5px 12px #bfbfbfb3;
       &-img-top {
@@ -79,6 +73,7 @@
           padding: 0 20px;
           button{
               border: none;
+              cursor: none;
               background: transparent;
               text-decoration: underline;
               padding: 10px;

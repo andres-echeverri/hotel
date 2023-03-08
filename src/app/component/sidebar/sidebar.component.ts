@@ -1,5 +1,6 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { GeneralInfoService } from '../../core/services/general-info.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -10,12 +11,15 @@ export class SidebarComponent implements OnInit {
 
   public formGroup!: FormGroup;
   date!: string;
+  reservationRooms!: any;
   @Output() searchHotel = new EventEmitter();
 
-  constructor( private formBuilder: FormBuilder ) { }
+  constructor( private formBuilder: FormBuilder,
+                public generalInfo:GeneralInfoService ) { }
 
   public ngOnInit() {
     this.buildForm();
+    this.generalInfo.loginAdmin$
   }
   
   private buildForm() {
@@ -28,6 +32,16 @@ export class SidebarComponent implements OnInit {
       destination: ['', Validators.required],
       person: ['1', Validators.required],
     });
+  }
+
+  showReservation(){
+    this.generalInfo.formConfirmedReservationRoomInfo$.subscribe((listItems: any) => {
+
+      this.reservationRooms = listItems;
+      this.reservationRooms.length === 0? console.log("no hay nada") : console.log("hay ", this.reservationRooms);
+      
+      
+    }).unsubscribe();
   }
 
   public search() {

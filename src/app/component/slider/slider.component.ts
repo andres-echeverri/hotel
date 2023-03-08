@@ -33,12 +33,10 @@ SwiperCore.use([
 export class SliderComponent implements OnInit {
 
   @Input() hotels: any;
-
   
   constructor() { }
   
   ngOnInit(): void {
-    console.log(this.hotels);
     
   }
   

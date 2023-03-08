@@ -1,15 +1,21 @@
-<app-header></app-header>
+<app-header (loginUsser)="login($event)"></app-header>
 <br>
+<app-slider [hotels]="recomendedHotel"></app-slider>
 <div class="home container">
     <app-sidebar (searchHotel)="SearchDestination($event)"></app-sidebar>
     <div class="home_container">
-        <app-slider [hotels]="recomendedHotel"></app-slider>
         <ng-container  [ngTemplateOutlet]="descriptionCardHotel"></ng-container>
+        <ng-container *ngIf="buttonReservation"  [ngTemplateOutlet]="rooms"></ng-container>
+        <ng-container *ngIf="showFormLogin" [ngTemplateOutlet]="loginForm"></ng-container>
     </div>
 </div>
 
 
 <ng-template #descriptionCardHotel>
+    <div *ngIf="removeFilter" class="alert">
+        <p *ngIf="textError">No se econtraron hoteles en el destino solicitado</p>
+        <span class="alert_filter" (click)="removeFilterOnClick()" *ngIf="removeFilter">Eliminar filtro</span>
+    </div>
     <div *ngIf="search && !textError">
         <h2 class="section-title">{{ searchedDestination }}
             <hr class="line">
@@ -21,21 +27,21 @@
         </div>
         <div class="card_description">
             <div class="card_description_text">
-                <h4 class="card_description_text-title">El casco art HOTEL</h4>
+                <h4 class="card_description_text-title">{{ item?.hotel }}</h4>
                 <div class="card_description_text-direccion">
                     <img  class="card_description_text-direccion-icon" src="https://images.prismic.io/vivaair-cms/47752211-5a59-40f2-9a17-43d23b21947c_destino.png?auto=compress,format" alt="">
-                    <p class="card_description_text-direccion-p">El rodadero</p>
+                    <p class="card_description_text-direccion-p">{{ item?.direccion }}</p>
                 </div>
-                <p class="card_description_text-p">Este hotel de 5 estrellas se encuentra a orillas del lago Nahuel Huapi y presenta una arquitectura elegante. El Casco Art Hotel exhibe 500 obras de arte exclusivas de escultores</p>
+                <p class="card_description_text-p">{{ item?.descripcion }}</p>
             </div>
             <div class="card_description_action">
                 <div>
                     <span>Precios a partir de</span>
-                    <h6 class="card_description_action-price"><span>COP</span> 1.199.000</h6>
+                    <h6 class="card_description_action-price"><span>COP</span> {{item?.minPrice | currency: 'COP' :'' }}</h6>
                     <span>Por persona y noche</span>
                 </div>
                 <div>
-                    <button class="btn card_description_action-btn">Reservar</button>
+                    <button class="btn card_description_action-btn" (click)="reservationonClick(item)">Reservar</button>
                 </div>
             </div>
         </div>
@@ -46,17 +52,56 @@
             previousLabel=" "
             nextLabel=" "></pagination-controls>
     </div>
-
-    <div class="alert">
-        <p *ngIf="textError">No se econtraron hoteles en el destino solicitado</p>
-        <span class="alert_filter" (click)="removeFilterOnClick()" *ngIf="removeFilter">Eliminar filtro</span>
-    </div>
 </ng-template>
 
 
 
 <ng-template #rooms>
-    <div>
+    <div class="roomfixed">
+        <div class="room">
+            <div class="room_container" *ngFor="let item of roomReservation">
+                <div class="room_img">
+                    <img src="https://images.prismic.io/vivaair-cms-test/16236f6a-df01-47f8-8917-bda9aafa1564_Foto+blog+%E2%80%93+movil.jpg?auto=compress,format" alt="">
+                </div>
+                <div class="room_description">
+                    <div class="room_description_text">
+                        <h4 class="room_description_text-title">{{ item?.tipo }}</h4>
+                        <div class="room_description_text-direccion">
+                            <img  class="room_description_text-direccion-icon" src="https://images.prismic.io/vivaair-cms/47752211-5a59-40f2-9a17-43d23b21947c_destino.png?auto=compress,format" alt="">
+                            <p class="room_description_text-direccion-p">{{ 'item?.direccion' }}</p>
+                        </div>
+                        <p class="room_description_text-p">{{ item?.descripcion }}</p>
+                    </div>
+                    <div>
+                        <h4>servicios populares</h4>
+                        <ul>
+                            <li *ngFor="let item of item?.servicios">{{item}}</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4>caracteristicas</h4>
+                        <ul>
+                            <li *ngFor="let item of item?.caracteristicas">{{item}}</li>
+                        </ul>
+                    </div>
+                    <div class="room_description_action">
+                        <div>
+                            <h6 class="room_description_action-price"><span>COP</span> {{ item?.precio | currency: 'COP' :''}}</h6>
+                            <span>Por persona y noche</span>
+                        </div>
+                        <div>
+                            <button class="btn card_description_action-btn" (click)="confirmReservation(item)">Reservar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</ng-template>
 
+
+<ng-template #loginForm>
+    <div class="login">
+        <app-login (closeModal)="closeModalLogin()" class="login_form"></app-login>
     </div>
 </ng-template>
