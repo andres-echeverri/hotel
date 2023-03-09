@@ -2,16 +2,23 @@
 <br>
 <app-slider [hotels]="recomendedHotel"></app-slider>
 <div class="home container">
-    <app-sidebar (searchHotel)="SearchDestination($event)"></app-sidebar>
+    <app-sidebar (searchHotel)="SearchDestination($event)"
+                (showNewHotel)="showNewHotel()"
+                (showEditHotel)="showEditHotel()"></app-sidebar>
     <div class="home_container">
         <ng-container  [ngTemplateOutlet]="descriptionCardHotel"></ng-container>
         <ng-container *ngIf="buttonReservation"  [ngTemplateOutlet]="rooms"></ng-container>
         <ng-container *ngIf="showFormLogin" [ngTemplateOutlet]="loginForm"></ng-container>
+        <ng-container *ngIf="showFormNewHotel" [ngTemplateOutlet]="createHotel"></ng-container>
     </div>
 </div>
 
 
 <ng-template #descriptionCardHotel>
+    <div *ngIf="(generalInfo.loginAdmin$ | async)">
+        <p>Bienvenido!</p>
+        <span>Ingresaste como administrador</span>
+    </div>
     <div *ngIf="removeFilter" class="alert">
         <p *ngIf="textError">No se econtraron hoteles en el destino solicitado</p>
         <span class="alert_filter" (click)="removeFilterOnClick()" *ngIf="removeFilter">Eliminar filtro</span>
@@ -41,7 +48,7 @@
                     <span>Por persona y noche</span>
                 </div>
                 <div>
-                    <button class="btn card_description_action-btn" (click)="reservationonClick(item)">Reservar</button>
+                    <button class="btn card_description_action-btn" (click)="reservationonClick(item)">{{generalInfo.loginAdmin$ ? 'editar': 'Reservar'}}</button>
                 </div>
             </div>
         </div>
@@ -57,7 +64,7 @@
 
 
 <ng-template #rooms>
-    <div class="roomfixed">
+    <div class="fixed">
         <div class="room">
             <div class="room_container" *ngFor="let item of roomReservation">
                 <div class="room_img">
@@ -103,5 +110,31 @@
 <ng-template #loginForm>
     <div class="login">
         <app-login (closeModal)="closeModalLogin()" class="login_form"></app-login>
+    </div>
+</ng-template>
+
+<ng-template #createHotel>
+    <div class="fixed">
+        <div>
+            <form class="form" [formGroup]="formGroup">
+                <div class="form_item">
+                    <label class="form_item-label" for="registeredOn">Fecha de entrada</label>
+                    <input class="form_item-input" name="registeredOn" formControlName="registeredOn" type="date" min="2023-03-07"/>
+                </div>
+                <div class="form_item">
+                    <label class="form_item-label" for="registeredOff">Fecha de salida</label>
+                    <input class="form_item-input" name="registeredOff" formControlName="registeredOff" type="date" min="2023-03-07"/>
+                </div>
+                <div class="form_item">
+                    <label class="form_item-label" for="person">Cantidad de personas</label>
+                    <input class="form_item-input" name="person" formControlName="person" type="number" min="1" max="1000"/>
+                </div>
+                <div class="form_item">
+                    <label class="form_item-label" for="destination">Destino</label>
+                    <input class="form_item-input" name="destination" formControlName="destination" type="text" />
+                </div>
+                <button class="btn form_btn" (click)="newHotel()" [disabled]="formGroup.invalid">Buscar</button>
+            </form>
+        </div>
     </div>
 </ng-template>

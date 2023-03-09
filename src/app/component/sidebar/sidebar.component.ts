@@ -13,6 +13,8 @@ export class SidebarComponent implements OnInit {
   date!: string;
   reservationRooms!: any;
   @Output() searchHotel = new EventEmitter();
+  @Output() showNewHotel = new EventEmitter();
+  @Output() showEditHotel = new EventEmitter();
 
   constructor( private formBuilder: FormBuilder,
                 public generalInfo:GeneralInfoService ) { }
@@ -25,7 +27,6 @@ export class SidebarComponent implements OnInit {
   private buildForm() {
     const dateLength = 10;
     this.date = new Date().toISOString().substring(0, dateLength);
-    const name = 'JOHN DOE';
     this.formGroup = this.formBuilder.group({
       registeredOn: [this.date, Validators.required],
       registeredOff: [this.date, Validators.required],
@@ -39,9 +40,15 @@ export class SidebarComponent implements OnInit {
 
       this.reservationRooms = listItems;
       this.reservationRooms.length === 0? console.log("no hay nada") : console.log("hay ", this.reservationRooms);
-      
-      
     }).unsubscribe();
+  }
+
+  newHotelOnClick(){
+    this.showNewHotel.emit()
+  }
+
+  editHotelOnClick(){
+    this.showEditHotel.emit()
   }
 
   public search() {
