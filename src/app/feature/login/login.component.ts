@@ -39,12 +39,10 @@ export class LoginComponent implements OnInit {
   public loginUsser() {
     const user = this.formGroup.value;
     if(!!credentialsAdmin.find((credential: {usser: string, password: string}) => credential.usser === user.usser && credential.password === user.password)){
-      this.generalInfo.setFormLoginAdminInfo(true)
-      this.generalInfo.setFormLoginUsserInfo(false)
+      this.generalInfo.setFormLoginInfo("admin")
       this.closeModal.emit();
     }else if(!!credentialsUsers.find((credential: {usser: string, password: string}) => credential.usser === user.usser && credential.password === user.password)){
-      this.generalInfo.setFormLoginAdminInfo(false)
-      this.generalInfo.setFormLoginUsserInfo(true)
+      this.generalInfo.setFormLoginInfo("user")
       this.closeModal.emit();
     }else{
       this.textLoginError = true;

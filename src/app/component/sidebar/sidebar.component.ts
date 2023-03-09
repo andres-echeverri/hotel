@@ -21,7 +21,6 @@ export class SidebarComponent implements OnInit {
 
   public ngOnInit() {
     this.buildForm();
-    this.generalInfo.loginAdmin$
   }
   
   private buildForm() {

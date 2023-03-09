@@ -1,16 +1,16 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, ReplaySubject } from 'rxjs';
 
+type Role = 'admin' | 'user' | null;
+
 @Injectable({
   providedIn: 'root'
 })
 export class GeneralInfoService {
   formReservationRoomInfo$: Observable<any>;
   formConfirmedReservationRoomInfo$: Observable<any>;
-  loginAdmin$: Observable<any>;
-  loginUser$: Observable<any>;
-  private formLoginAdminInfoSource = new BehaviorSubject<boolean>(false);
-  private formLoginUserInfoSource = new BehaviorSubject<boolean>(false);
+  login$: Observable<any>;
+  private formLoginInfoSource = new BehaviorSubject<Role>(null);
   private formConfirmedReservationRoomInfoSource = new BehaviorSubject<[]>([])
   private formReservationRoomInfoSource = new BehaviorSubject<any>([
     {
@@ -202,8 +202,7 @@ export class GeneralInfoService {
   constructor() {
     this.formReservationRoomInfo$ = this.formReservationRoomInfoSource.asObservable();
     this.formConfirmedReservationRoomInfo$ = this.formConfirmedReservationRoomInfoSource.asObservable();
-    this.loginAdmin$ = this.formLoginAdminInfoSource.asObservable();
-    this.loginUser$ = this.formLoginUserInfoSource.asObservable();
+    this.login$ = this.formLoginInfoSource.asObservable();
    }
 
 
@@ -217,11 +216,7 @@ export class GeneralInfoService {
     this.formConfirmedReservationRoomInfoSource.next(reservationRoom);
   }
 
-  setFormLoginAdminInfo(loginAdmin: boolean): void {
-    this.formLoginAdminInfoSource.next(loginAdmin);
-  }
-
-  setFormLoginUsserInfo(loginAdmin: boolean): void {
-    this.formLoginUserInfoSource.next(loginAdmin);
+  setFormLoginInfo(loginAdmin: Role): void {
+    this.formLoginInfoSource.next(loginAdmin);
   }
 }

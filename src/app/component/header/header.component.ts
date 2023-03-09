@@ -17,24 +17,13 @@ export class HeaderComponent implements OnInit {
   }
 
   loginOnClick(){
-    console.log("corre");
-    
-    this.generalInfo.loginAdmin$.subscribe(logAdmin => {
-      if(logAdmin){
-        this.generalInfo.setFormLoginAdminInfo(false)
-        this.flagloggedUsser = true;
+    this.generalInfo.login$.subscribe(loguin => {
+      console.log(loguin);
+      if(loguin === 'admin' || loguin === 'user'){
+        this.generalInfo.setFormLoginInfo(null)
+        this.loginUsser.emit(false)
       }else{
-        this.generalInfo.loginUser$.subscribe(logUsser => {
-          if(logUsser){
-            this.generalInfo.setFormLoginUsserInfo(false)
-            this.flagloggedUsser = true;
-          }else{
-            console.log("adwda");
-            
-            this.loginUsser.emit(true)
-            this.flagloggedUsser = false;
-          }
-        }).unsubscribe();
+        this.loginUsser.emit(true)
       }
     }).unsubscribe();
     

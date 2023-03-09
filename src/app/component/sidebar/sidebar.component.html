@@ -1,4 +1,4 @@
-<div *ngIf="(generalInfo.loginUser$ | async)" >
+<div *ngIf="(generalInfo.login$ | async) != 'admin'">
     <form class="form" [formGroup]="formGroup">
         <div class="form_item">
             <label class="form_item-label" for="registeredOn">Fecha de entrada</label>
@@ -20,7 +20,7 @@
     </form>
 </div>
 
-<div *ngIf="generalInfo.loginAdmin$">
+<div *ngIf="(generalInfo.login$ | async) === 'admin'">
     <ul>
         <li (click)="newHotelOnClick()">Crear hotel</li>
         <li (click)="editHotelOnClick()">Editar hotel</li>

@@ -15,7 +15,7 @@
 
 
 <ng-template #descriptionCardHotel>
-    <div *ngIf="(generalInfo.loginAdmin$ | async)">
+    <div  *ngIf="(generalInfo.login$ | async) === 'admin'">
         <p>Bienvenido!</p>
         <span>Ingresaste como administrador</span>
     </div>
@@ -48,7 +48,7 @@
                     <span>Por persona y noche</span>
                 </div>
                 <div>
-                    <button class="btn card_description_action-btn" (click)="reservationonClick(item)">{{generalInfo.loginAdmin$ ? 'editar': 'Reservar'}}</button>
+                    <button class="btn card_description_action-btn" (click)="reservationonClick(item)">{{ (generalInfo.login$ | async) === 'admin' ? 'editar': 'Reservar'}}</button>
                 </div>
             </div>
         </div>

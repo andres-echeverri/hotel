@@ -1,4 +1,4 @@
-<div *ngIf="!(generalInfo.loginAdmin$ | async)"  class="container-fluid tourism">
+<div  *ngIf="(generalInfo.login$ | async) === 'user'"  class="container-fluid tourism">
     <div class="container">
         <h2 class="section-title">{{ 'Los mejores hoteles' }}
             <hr class="line">
