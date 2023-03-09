@@ -21,10 +21,15 @@
 </div>
 
 <div *ngIf="(generalInfo.login$ | async) === 'admin'">
-    <ul>
-        <li (click)="newHotelOnClick()">Crear hotel</li>
-        <li (click)="editHotelOnClick()">Editar hotel</li>
-    </ul>
+    <div class="welcomeAdmin">
+        <p class="welcomeAdmin-title">Bienvenido!</p>
+        <span class="welcomeAdmin-text">Ingresaste como administrador</span>
+    </div>
+    <div class="container_admin">
+        <ul class="container_admin_option">
+            <li class="container_admin_option-item" (click)="newHotelOnClick()">Crear hotel</li>
+        </ul>
+    </div>
 </div>
 
 

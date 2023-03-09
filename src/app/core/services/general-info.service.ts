@@ -1,18 +1,18 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, ReplaySubject } from 'rxjs';
 
-type Role = 'admin' | 'user' | null;
+export type Role = 'admin' | 'user' | null | '';
 
 @Injectable({
   providedIn: 'root'
 })
 export class GeneralInfoService {
-  formReservationRoomInfo$: Observable<any>;
+  formReservationInfo$: Observable<any>;
   formConfirmedReservationRoomInfo$: Observable<any>;
   login$: Observable<any>;
-  private formLoginInfoSource = new BehaviorSubject<Role>(null);
+  private formLoginInfoSource = new BehaviorSubject<Role>('admin');
   private formConfirmedReservationRoomInfoSource = new BehaviorSubject<[]>([])
-  private formReservationRoomInfoSource = new BehaviorSubject<any>([
+  private formReservationInfoSource = new BehaviorSubject<any>([
     {
       image: "https://images.prismic.io/vivaair-cms/530da708-3d56-4ccf-ac79-a3937ad0e8de_barrio-san-blas.png?auto=compress,format",
       hotel: "Baluarte Cartagena Hotel Boutique",
@@ -200,14 +200,14 @@ export class GeneralInfoService {
 
 
   constructor() {
-    this.formReservationRoomInfo$ = this.formReservationRoomInfoSource.asObservable();
+    this.formReservationInfo$ = this.formReservationInfoSource.asObservable();
     this.formConfirmedReservationRoomInfo$ = this.formConfirmedReservationRoomInfoSource.asObservable();
     this.login$ = this.formLoginInfoSource.asObservable();
    }
 
 
-  setFormReservationRoomInfo(reservations: any): void {
-    this.formReservationRoomInfoSource.next(reservations);
+  setFormReservationInfo(reservations: any): void {
+    this.formReservationInfoSource.next(reservations);
   }
 
   setFormConfirmedReservationRoomInfo(reservationRoom: any): void {

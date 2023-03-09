@@ -21,9 +21,10 @@ export class HeaderComponent implements OnInit {
       console.log(loguin);
       if(loguin === 'admin' || loguin === 'user'){
         this.generalInfo.setFormLoginInfo(null)
-        this.loginUsser.emit(false)
       }else{
-        this.loginUsser.emit(true)
+        if(this.flagloggedUsser = true){
+          this.loginUsser.emit(true)
+        }
       }
     }).unsubscribe();
     

@@ -1,6 +1,6 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
-import { FormGroup } from '@angular/forms';
-import { GeneralInfoService } from '../../core/services/general-info.service';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { GeneralInfoService, Role } from '../../core/services/general-info.service';
 
 
 
@@ -12,6 +12,7 @@ import { GeneralInfoService } from '../../core/services/general-info.service';
 export class HomeComponent implements OnInit {
 
   public formGroup!: FormGroup;
+  public formGroupRooms!: FormGroup;
   listHotel: any;
   hotel: any;
   recomendedHotel: any
@@ -26,16 +27,42 @@ export class HomeComponent implements OnInit {
   showFormLogin: boolean = false
   showFormNewHotel: boolean = false
   showFormEditHotel: boolean = false
+  Rooms: any = []
 
 
-  constructor(public readonly generalInfo: GeneralInfoService) { }
+  constructor(public readonly generalInfo: GeneralInfoService,
+              private readonly formBuilder: FormBuilder,) { }
 
   ngOnInit(): void {
-    this.generalInfo.formReservationRoomInfo$.subscribe(listHotel => {
+    this.generalInfo.formReservationInfo$.subscribe(listHotel => {
       this.listHotel = listHotel;
       this.hotel = listHotel
       this.recomendedHotel = listHotel.filter((hotel: any) => hotel.recomendado === true)
     })
+
+    this.buildForm();
+    this.buildFormRooms();
+  }
+
+  private buildForm() {
+    this.formGroup = this.formBuilder.group({
+      hotel: ['', Validators.required],
+      description: ['', Validators.required],
+      location: ['', Validators.required],
+      addres: ['', Validators.required],
+      recomended: ['', Validators.required],
+      minPrice: ['', Validators.required],
+    });
+  }
+
+  private buildFormRooms() {
+    this.formGroupRooms = this.formBuilder.group({
+      type: ['', Validators.required],
+      description: ['', Validators.required],
+      price: ['', Validators.required],
+      services: ['', Validators.required],
+      characteristics: ['', Validators.required],
+    });
   }
 
   SearchDestination(destination: any) {
@@ -55,10 +82,16 @@ export class HomeComponent implements OnInit {
   }
 
   reservationonClick(item: any){
-    this.roomReservation = item.habitaciones;
-    console.log("this.hotelReservation", this.roomReservation);
-    
-    this.buttonReservation = !this.buttonReservation
+    this.generalInfo.login$.subscribe((login: Role) => {
+      if(login == 'user'){
+        this.roomReservation = item.habitaciones;
+        this.buttonReservation = !this.buttonReservation
+      }else if(login == 'admin'){
+        console.log("edit hotel");
+      }else{
+        this.showFormLogin = !this.showFormLogin 
+      }
+    })
   }
 
   confirmReservation(item: any){
@@ -77,78 +110,45 @@ export class HomeComponent implements OnInit {
   }
 
   showNewHotel(){
-    console.log("adawdwd");
-    
-    this.showFormNewHotel = true;
-  }
-  showEditHotel(){
-    
+    this.showFormNewHotel = !this.showFormNewHotel;
   }
 
   newHotel(){
-    console.log(this.listHotel);
+    const data = this.formGroup.value;
     const newHotel = {
       image: "https://images.prismic.io/vivaair-cms/530da708-3d56-4ccf-ac79-a3937ad0e8de_barrio-san-blas.png?auto=compress,format",
-      hotel: "Este es un hotel de prueba",
-      descripcion: "El Baluarte Cartagena Hotel Boutique ofrece habitaciones y apartamentos de servicio completo con WiFi gratuita y alberga una terraza tropical en la azotea con bañera de hidromasaje. El establecimiento se encuentra en el centro histórico de Bocagrande, a poca distancia del mar Caribe.",
-      ubicacion: "San andres",
-      direccion: "Jonny kay",
-      recomendado: true,
-      minPrice: 89900,
-      habitaciones: [
-        {
-          tipo: "calsic",
-          valor: "",
-          descripcion: "El Baluarte Cartagena Hotel Boutique ofrece habitaciones y apartamentos de servicio completo con WiFi gratuita y alberga una terraza tropical en la azotea con bañera de hidromasaje. El establecimiento se encuentra en el centro histórico de Bocagrande, a poca distancia del mar Caribe.",
-          precio: 109000,
-          servicios: [
-            'Actividades infantiles (Ideal para niños / familias)',
-            'Desayuno gratis',
-            'Cancha de tenis',
-            'Transporte gratis al aeropuerto',
-            'Gimnasio / Sala de entrenamiento',
-            'Restaurante',
-            'Vestuarios de gimnasio/spa',
-            'Estacionamiento gratis'
-          ],
-          caracteristicas: [
-            'TV pantalla plana',
-            'Caja fuerte',
-            'Aire acondicionado',
-            'Minibar',
-          ]
-        },
-        {
-          tipo: "Sensilla",
-          descripcion: "El Baluarte Cartagena Hotel Boutique ofrece habitaciones y apartamentos de servicio completo con WiFi gratuita y alberga una terraza tropical en la azotea con bañera de hidromasaje. El establecimiento se encuentra en el centro histórico de Bocagrande, a poca distancia del mar Caribe.",
-          precio: 109000,
-          servicios: [
-            'Actividades infantiles (Ideal para niños / familias)',
-            'Desayuno gratis',
-            'Cancha de tenis',
-            'Transporte gratis al aeropuerto',
-            'Gimnasio / Sala de entrenamiento',
-            'Restaurante',
-            'Vestuarios de gimnasio/spa',
-            'Estacionamiento gratis'
-          ],
-          caracteristicas: [
-            'TV pantalla plana',
-            'Caja fuerte',
-            'Aire acondicionado',
-            'Minibar',
-          ]
-        }
-      ]
+      hotel: data?.hotel,
+      descripcion: data?.description,
+      ubicacion: data?.location,
+      direccion: data?.addres,
+      recomendado: data?.recomended,
+      minPrice: parseInt(data?.minPrice),
+      habitaciones: this.Rooms
     }
     this.listHotel.unshift(newHotel)
     console.log(this.listHotel);
+    this.showFormNewHotel = false;
+    this.generalInfo.setFormReservationInfo(this.listHotel)
     
   }
 
   editHotel(){
     console.log("Editar hoteles");
     
+  }
+
+  newRoomsForHotelonClick(){
+    const room = this.formGroupRooms.value;
+    const newRooms = {
+      tipo: room?.type,
+      descripcion: room?.description,
+      precio: parseInt(room?.price),
+      servicios: room?.services.split(','),
+      caracteristicas: room?.characteristics.split(',')
+    }
+    this.Rooms.push(newRooms)
+    console.log(this.Rooms);
+    this.formGroupRooms.reset()
   }
 
 }

@@ -3,8 +3,7 @@
 <app-slider [hotels]="recomendedHotel"></app-slider>
 <div class="home container">
     <app-sidebar (searchHotel)="SearchDestination($event)"
-                (showNewHotel)="showNewHotel()"
-                (showEditHotel)="showEditHotel()"></app-sidebar>
+                (showNewHotel)="showNewHotel()"></app-sidebar>
     <div class="home_container">
         <ng-container  [ngTemplateOutlet]="descriptionCardHotel"></ng-container>
         <ng-container *ngIf="buttonReservation"  [ngTemplateOutlet]="rooms"></ng-container>
@@ -15,10 +14,6 @@
 
 
 <ng-template #descriptionCardHotel>
-    <div  *ngIf="(generalInfo.login$ | async) === 'admin'">
-        <p>Bienvenido!</p>
-        <span>Ingresaste como administrador</span>
-    </div>
     <div *ngIf="removeFilter" class="alert">
         <p *ngIf="textError">No se econtraron hoteles en el destino solicitado</p>
         <span class="alert_filter" (click)="removeFilterOnClick()" *ngIf="removeFilter">Eliminar filtro</span>
@@ -115,26 +110,64 @@
 
 <ng-template #createHotel>
     <div class="fixed">
-        <div>
+        <div class="newHotel">
             <form class="form" [formGroup]="formGroup">
                 <div class="form_item">
-                    <label class="form_item-label" for="registeredOn">Fecha de entrada</label>
-                    <input class="form_item-input" name="registeredOn" formControlName="registeredOn" type="date" min="2023-03-07"/>
+                    <label class="form_item-label" for="hotel">Hotel</label>
+                    <input class="form_item-input" name="hotel" formControlName="hotel" type="text" />
                 </div>
                 <div class="form_item">
-                    <label class="form_item-label" for="registeredOff">Fecha de salida</label>
-                    <input class="form_item-input" name="registeredOff" formControlName="registeredOff" type="date" min="2023-03-07"/>
+                    <label class="form_item-label" for="destination">ubicacion</label>
+                    <input class="form_item-input" name="destination" formControlName="location" type="text" />
+                </div>
+                <div class="form_item form_item-description">
+                    <label class="form_item-label" for="description">descripcion</label>
+                    <input class="form_item-input" name="description" formControlName="description" type="text" />
+                </div>
+                
+                <div class="form_item">
+                    <label class="form_item-label" for="destination">Direccion</label>
+                    <input class="form_item-input" name="destination" formControlName="addres" type="text" />
                 </div>
                 <div class="form_item">
-                    <label class="form_item-label" for="person">Cantidad de personas</label>
-                    <input class="form_item-input" name="person" formControlName="person" type="number" min="1" max="1000"/>
+                    <label class="form_item-label" for="destination">minPrice</label>
+                    <input class="form_item-input" name="destination" formControlName="minPrice" type="text" />
                 </div>
-                <div class="form_item">
-                    <label class="form_item-label" for="destination">Destino</label>
-                    <input class="form_item-input" name="destination" formControlName="destination" type="text" />
+                <div class="form_item form_item-checkbox">
+                    <label class="form_item-label" for="person">Seleccionar como recomendado</label>
+                    <input class="form_item-input" name="person" formControlName="recomended" type="checkbox"/>
                 </div>
-                <button class="btn form_btn" (click)="newHotel()" [disabled]="formGroup.invalid">Buscar</button>
+                <button class="btn form_btn" (click)="newHotel()" [disabled]="formGroup.invalid">Agregar hotel</button>
             </form>
+            <div class="newHotel_rooms">
+                <form class="form form_rooms" [formGroup]="formGroupRooms">
+                    <div class="form_item">
+                        <label class="form_item-label" for="type">Tipo de habitacion</label>
+                        <input class="form_item-input" name="type" formControlName="type" type="text" />
+                    </div>
+                    <div class="form_item">
+                        <label class="form_item-label" for="price">precio de la habitacion</label>
+                        <input class="form_item-input" name="price" formControlName="price" type="text" />
+                    </div>
+                    <div class="form_item form_item-description">
+                        <label class="form_item-label" for="description">descripcion</label>
+                        <input class="form_item-input" name="description" formControlName="description" type="textarea" />
+                    </div>
+                    
+                    <div class="form_item form_item-services">
+                        <label class="form_item-label" for="services">servicios asociados a la habitacion (separdo por comas ',')</label>
+                        <input class="form_item-input" name="services" formControlName="services" type="text" />
+                    </div>
+                    <div class="form_item form_item-characteristics">
+                        <label class="form_item-label" for="characteristics">caracteristicas de la habitacion (separdo por comas ',')</label>
+                        <input class="form_item-input" name="characteristics" formControlName="characteristics" type="text" />
+                    </div>
+                    <button class="btn form_btnRoom" (click)="newRoomsForHotelonClick()" [disabled]="formGroupRooms.invalid">Guardar habitacion</button>
+                    <div class="form_item-checked">
+                        <img *ngFor="let item of Rooms"  src="https://images.prismic.io/vivaair-cms/4e4cb958-e577-47ba-935c-bfb676040677_marca-de-verificacion.png?auto=compress,format" alt="">
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 </ng-template>
