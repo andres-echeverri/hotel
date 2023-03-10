@@ -1,6 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { GeneralInfoService } from '../../core/services/general-info.service';
 
+const credentialsAdmin = [
+  {usser: 'admin', password: 'admin1234'}
+]
+
+const credentialsUsers = [
+  {usser: 'user', password: 'user1234'}
+]
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -8,35 +16,41 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 })
 export class LoginComponent implements OnInit {
   formGroup!: FormGroup;
-  date!: Date;
+  textLoginError: boolean = false;
+  @Output() closeModal = new EventEmitter();
 
-  constructor( private formBuilder: FormBuilder ) { }
+  constructor( private formBuilder: FormBuilder,
+                private readonly generalInfo: GeneralInfoService ) { }
 
   public ngOnInit() {
     this.buildForm();
   }
   
   private buildForm() {
-    
-    const dateLength = 10;
-    const today = new Date().toISOString().substring(0, dateLength);
-    const name = 'JOHN DOE';
     const minPassLength = 4;
     this.formGroup = this.formBuilder.group({
-      registeredOn: today,
-      name: [name.toLowerCase(), Validators.required],
-      email: ['john@angular.io', [
-        Validators.required, Validators.email
-      ]],
+      usser: ['', Validators.required],
       password: ['', [
         Validators.required, Validators.minLength(minPassLength)
       ]]
     });
   }
 
-  public register() {
+  public loginUsser() {
     const user = this.formGroup.value;
-    console.log(user);
+    if(!!credentialsAdmin.find((credential: {usser: string, password: string}) => credential.usser === user.usser && credential.password === user.password)){
+      this.generalInfo.setFormLoginInfo("admin")
+      this.closeModal.emit();
+    }else if(!!credentialsUsers.find((credential: {usser: string, password: string}) => credential.usser === user.usser && credential.password === user.password)){
+      this.generalInfo.setFormLoginInfo("user")
+      this.closeModal.emit();
+    }else{
+      this.textLoginError = true;
+    }
+  }
+
+  ModalLogin(){
+    this.closeModal.emit();
   }
 
 }

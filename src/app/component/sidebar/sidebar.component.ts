@@ -1,5 +1,6 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { GeneralInfoService } from '../../core/services/general-info.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -10,9 +11,14 @@ export class SidebarComponent implements OnInit {
 
   public formGroup!: FormGroup;
   date!: string;
+  reservationRooms!: any;
+  flagShowReservation: boolean = false
   @Output() searchHotel = new EventEmitter();
+  @Output() showNewHotel = new EventEmitter();
+  @Output() showReservation = new EventEmitter();
 
-  constructor( private formBuilder: FormBuilder ) { }
+  constructor( private formBuilder: FormBuilder,
+                public generalInfo:GeneralInfoService ) { }
 
   public ngOnInit() {
     this.buildForm();
@@ -21,7 +27,6 @@ export class SidebarComponent implements OnInit {
   private buildForm() {
     const dateLength = 10;
     this.date = new Date().toISOString().substring(0, dateLength);
-    const name = 'JOHN DOE';
     this.formGroup = this.formBuilder.group({
       registeredOn: [this.date, Validators.required],
       registeredOff: [this.date, Validators.required],
@@ -30,10 +35,23 @@ export class SidebarComponent implements OnInit {
     });
   }
 
+  showReservationActive(){
+    if(this.flagShowReservation === false){
+      this.showReservation.emit("showReservation")
+      this.flagShowReservation = true;
+    }else{
+      this.showReservation.emit("showListHotel")
+      this.flagShowReservation = false
+    }
+  }
+
+  newHotelOnClick(){
+    this.showNewHotel.emit()
+  }
+
   public search() {
-    const user = this.formGroup.value;
-    console.log(user);
-    this.searchHotel.emit(user)
+    const search = this.formGroup.value;
+    this.searchHotel.emit(search)
   }
 
 }

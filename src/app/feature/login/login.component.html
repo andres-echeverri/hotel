@@ -1,14 +1,12 @@
-<p>login works!</p>
-
-
-<form [formGroup]="formGroup">
-    <label for="registeredOn">Registered On</label>
-    <input name="registeredOn" formControlName="registeredOn" type="date" />
-    <label for="name">Name</label>
-    <input name="name" formControlName="name" type="text" />
-    <label for="email">E-mail</label>
-    <input name="email" formControlName="email" type="email" />
+<form class="login_form" [formGroup]="formGroup">
+    <div (click)="ModalLogin()"  class="login_form-close">
+        <span>x</span>
+    </div>
+    <h4 class="login_form-title">Ingresa</h4>
+    <label for="usser">Usuario</label>
+    <input name="usser" formControlName="usser" type="text" />
     <label for="password">Password</label>
     <input name="password" formControlName="password" type="password" />
-    <button (click)="register()" [disabled]="formGroup.invalid">Register me!</button>
+    <button class="login_form-btn btn" (click)="loginUsser()" [disabled]="formGroup.invalid">Register me!</button>
+    <p *ngIf="textLoginError" class="login_form-error" >Las credenciales ingresadas no coinciden</p>
 </form>

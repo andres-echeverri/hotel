@@ -1,29 +1,29 @@
-<div *ngIf="hotels.legth <= 3" class="container-fluid tourism">
-    <div>
+<div  *ngIf="(generalInfo.login$ | async) === 'user'"  class="container-fluid tourism">
+    <div class="container">
         <h2 class="section-title">{{ 'Los mejores hoteles' }}
             <hr class="line">
         </h2>
     </div>
 
-    <div>
+    <div class="container">
         <swiper
-            [slidesPerView]="hotels.legth <= 3 ? 1:3"
+            [slidesPerView]="3"
             [pagination]="true"
             [spaceBetween]="15"
-            [loop]="hotels.legth <= 3 ? true:false"
+            [loop]="false"
             [freeMode]="true"
             [navigation]="true"
             class="tourism__slider swiper"
         >
-            <ng-template swiperSlide *ngFor="let place of [1]; let i=index">
+            <ng-template swiperSlide *ngFor="let place of hotels; let i=index">
                 <div class="card tourism__card">
                     <img class="card-img-top tourism__card-img-top" src="https://images.prismic.io/vivaair-cms/530da708-3d56-4ccf-ac79-a3937ad0e8de_barrio-san-blas.png?auto=compress,format" [alt]="'place?.place_image?.alt'">
                     <div class="card-body tourism__card-body">
-                      <h5 class="card-title tourism__card-title">{{ 'place?.place_name' }}</h5>
-                      <p class="card-text tourism__card-text">{{ 'place?.place_description' }}</p>
+                      <h5 class="card-title tourism__card-title">{{ place?.hotel }}</h5>
+                      <p class="card-text tourism__card-text">{{ place?.descripcion }}</p>
                     </div>
                     <div class="tourism__card-btn">
-                        <button>{{ 'Ver más'}}</button>
+                        <button>{{ 'Recomendado'}}</button>
                     </div>
                 </div>
             </ng-template>

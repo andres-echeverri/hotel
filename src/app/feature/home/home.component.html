@@ -1,62 +1,215 @@
-<app-header></app-header>
+<app-header (loginUsser)="login($event)"></app-header>
 <br>
+<app-slider [hotels]="recomendedHotel"></app-slider>
 <div class="home container">
-    <app-sidebar (searchHotel)="SearchDestination($event)"></app-sidebar>
+    <app-sidebar (searchHotel)="SearchDestination($event)"
+                (showNewHotel)="showNewHotel()"
+                (showReservation)="showPageActive($event)"></app-sidebar>
     <div class="home_container">
-        <app-slider [hotels]="recomendedHotel"></app-slider>
         <ng-container  [ngTemplateOutlet]="descriptionCardHotel"></ng-container>
+        <ng-container *ngIf="buttonReservation"  [ngTemplateOutlet]="rooms"></ng-container>
+        <ng-container *ngIf="showFormLogin" [ngTemplateOutlet]="loginForm"></ng-container>
+        <ng-container *ngIf="showFormNewHotel" [ngTemplateOutlet]="createHotel"></ng-container>
+        <ng-container *ngIf="showFormUser" [ngTemplateOutlet]="createUser"></ng-container>
     </div>
 </div>
 
 
 <ng-template #descriptionCardHotel>
+    <div *ngIf="removeFilter" class="alert">
+        <p *ngIf="textError">No se econtraron hoteles en el destino solicitado</p>
+        <span class="alert_filter" (click)="removeFilterOnClick()" *ngIf="removeFilter">Eliminar filtro</span>
+    </div>
     <div *ngIf="search && !textError">
         <h2 class="section-title">{{ searchedDestination }}
             <hr class="line">
         </h2>
     </div>
-    <div class="card" *ngFor="let item of hotel | paginate: { itemsPerPage: 4, currentPage: page }">
-        <div class="card_img">
-            <img src="https://images.prismic.io/vivaair-cms-test/16236f6a-df01-47f8-8917-bda9aafa1564_Foto+blog+%E2%80%93+movil.jpg?auto=compress,format" alt="">
-        </div>
-        <div class="card_description">
-            <div class="card_description_text">
-                <h4 class="card_description_text-title">El casco art HOTEL</h4>
-                <div class="card_description_text-direccion">
-                    <img  class="card_description_text-direccion-icon" src="https://images.prismic.io/vivaair-cms/47752211-5a59-40f2-9a17-43d23b21947c_destino.png?auto=compress,format" alt="">
-                    <p class="card_description_text-direccion-p">El rodadero</p>
-                </div>
-                <p class="card_description_text-p">Este hotel de 5 estrellas se encuentra a orillas del lago Nahuel Huapi y presenta una arquitectura elegante. El Casco Art Hotel exhibe 500 obras de arte exclusivas de escultores</p>
+    <div *ngIf="!showPageAdminReservation">
+        <div class="card" *ngFor="let item of showPageAdminReservation ? (generalInfo.formConfirmedReservationRoomInfo$ | async): hotels | paginate: { itemsPerPage: 4, currentPage: page }">
+            <div class="card_img">
+                <img src="https://images.prismic.io/vivaair-cms-test/16236f6a-df01-47f8-8917-bda9aafa1564_Foto+blog+%E2%80%93+movil.jpg?auto=compress,format" alt="">
             </div>
-            <div class="card_description_action">
-                <div>
-                    <span>Precios a partir de</span>
-                    <h6 class="card_description_action-price"><span>COP</span> 1.199.000</h6>
-                    <span>Por persona y noche</span>
+            <div class="card_description">
+                <div class="card_description_text">
+                    <h4 class="card_description_text-title">{{ item?.hotel }}</h4>
+                    <div class="card_description_text-direccion">
+                        <img  class="card_description_text-direccion-icon" src="https://images.prismic.io/vivaair-cms/47752211-5a59-40f2-9a17-43d23b21947c_destino.png?auto=compress,format" alt="">
+                        <p class="card_description_text-direccion-p">{{ item?.direccion }}</p>
+                    </div>
+                    <p class="card_description_text-p">{{ item?.descripcion }}</p>
                 </div>
-                <div>
-                    <button class="btn card_description_action-btn">Reservar</button>
+                <div class="card_description_action">
+                    <div>
+                        <span>Precios a partir de</span>
+                        <h6 class="card_description_action-price"><span>COP</span> {{item?.minPrice | currency: 'COP' :'' }}</h6>
+                        <span>Por persona y noche</span>
+                    </div>
+                    <div>
+                        <button class="btn card_description_action-btn" (click)="reservationonClick(item)">{{ (generalInfo.login$ | async) === 'admin' ? 'editar': 'Reservar'}}</button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-    <div *ngIf="!textError" class="card_pagination">
-        <pagination-controls 
-            (pageChange)="page = $event" 
-            previousLabel=" "
-            nextLabel=" "></pagination-controls>
+        <div *ngIf="!textError" class="card_pagination">
+            <pagination-controls 
+                (pageChange)="page = $event" 
+                previousLabel=" "
+                nextLabel=" "></pagination-controls>
+        </div>
     </div>
 
-    <div class="alert">
-        <p *ngIf="textError">No se econtraron hoteles en el destino solicitado</p>
-        <span class="alert_filter" (click)="removeFilterOnClick()" *ngIf="removeFilter">Eliminar filtro</span>
+    <div *ngIf="showPageAdminReservation">
+        <div class="card" *ngFor="let item of (generalInfo.formConfirmedReservationRoomInfo$ | async)">
+            <div class="card_img">
+                <img src="https://images.prismic.io/vivaair-cms-test/16236f6a-df01-47f8-8917-bda9aafa1564_Foto+blog+%E2%80%93+movil.jpg?auto=compress,format" alt="">
+            </div>
+            <div class="card_description">
+                <div class="card_description_text">
+                    <h4 class="card_description_text-title">{{ item?.hotel }}</h4>
+                    <div class="card_description_text-direccion">
+                        <img  class="card_description_text-direccion-icon" src="https://images.prismic.io/vivaair-cms/47752211-5a59-40f2-9a17-43d23b21947c_destino.png?auto=compress,format" alt="">
+                        <p class="card_description_text-direccion-p">{{ item?.direccion }}</p>
+                    </div>
+                    <p class="card_description_text-p">{{ item?.descripcion }}</p>
+                </div>
+                <div class="card_description_user">
+                    <p class="card_description_user-title">Usuarios de la reserva</p>
+                    <div class="card_description_user-list" *ngFor="let item of item?.userReservation">
+                        <span>{{item?.user}}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </ng-template>
 
 
 
 <ng-template #rooms>
-    <div>
+    <div class="fixed">
+        <div class="room">
+            <div class="room_container" *ngFor="let item of roomReservation">
+                <div class="room_img">
+                    <img src="https://images.prismic.io/vivaair-cms-test/16236f6a-df01-47f8-8917-bda9aafa1564_Foto+blog+%E2%80%93+movil.jpg?auto=compress,format" alt="">
+                </div>
+                <div class="room_description">
+                    <div class="room_description_text">
+                        <h4 class="room_description_text-title">{{ item?.tipo }}</h4>
+                        <div class="room_description_text-direccion">
+                            <img  class="room_description_text-direccion-icon" src="https://images.prismic.io/vivaair-cms/47752211-5a59-40f2-9a17-43d23b21947c_destino.png?auto=compress,format" alt="">
+                            <p class="room_description_text-direccion-p">{{ 'item?.direccion' }}</p>
+                        </div>
+                        <p class="room_description_text-p">{{ item?.descripcion }}</p>
+                    </div>
+                    <div>
+                        <h4>servicios populares</h4>
+                        <ul>
+                            <li *ngFor="let item of item?.servicios">{{item}}</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4>caracteristicas</h4>
+                        <ul>
+                            <li *ngFor="let item of item?.caracteristicas">{{item}}</li>
+                        </ul>
+                    </div>
+                    <div class="room_description_action">
+                        <div>
+                            <h6 class="room_description_action-price"><span>COP</span> {{ item?.precio | currency: 'COP' :''}}</h6>
+                            <span>Por persona y noche</span>
+                        </div>
+                        <div>
+                            <button class="btn card_description_action-btn" (click)="confirmReservation()">Reservar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</ng-template>
 
+
+<ng-template #loginForm>
+    <div class="login">
+        <app-login (closeModal)="closeModalLogin()" class="login_form"></app-login>
+    </div>
+</ng-template>
+
+<ng-template #createHotel>
+    <div class="fixed">
+        <div class="newHotel">
+            <form class="form" [formGroup]="formGroup">
+                <div class="form_item">
+                    <label class="form_item-label" for="hotel">Hotel</label>
+                    <input class="form_item-input" name="hotel" formControlName="hotel" type="text" />
+                </div>
+                <div class="form_item">
+                    <label class="form_item-label" for="destination">ubicacion</label>
+                    <input class="form_item-input" name="destination" formControlName="location" type="text" />
+                </div>
+                <div class="form_item form_item-description">
+                    <label class="form_item-label" for="description">descripcion</label>
+                    <input class="form_item-input" name="description" formControlName="description" type="text" />
+                </div>
+                
+                <div class="form_item">
+                    <label class="form_item-label" for="destination">Direccion</label>
+                    <input class="form_item-input" name="destination" formControlName="addres" type="text" />
+                </div>
+                <div class="form_item">
+                    <label class="form_item-label" for="destination">minPrice</label>
+                    <input class="form_item-input" name="destination" formControlName="minPrice" type="text" />
+                </div>
+                <div class="form_item form_item-checkbox">
+                    <label class="form_item-label" for="person">Seleccionar como recomendado</label>
+                    <input class="form_item-input" name="person" formControlName="recomended" type="checkbox"/>
+                </div>
+                <button class="btn form_btn" (click)="newHotel()" [disabled]="formGroup.invalid">Agregar hotel</button>
+            </form>
+            <div class="newHotel_rooms">
+                <form class="form form_rooms" [formGroup]="formGroupRooms">
+                    <div class="form_item">
+                        <label class="form_item-label" for="type">Tipo de habitacion</label>
+                        <input class="form_item-input" name="type" formControlName="type" type="text" />
+                    </div>
+                    <div class="form_item">
+                        <label class="form_item-label" for="price">precio de la habitacion</label>
+                        <input class="form_item-input" name="price" formControlName="price" type="text" />
+                    </div>
+                    <div class="form_item form_item-description">
+                        <label class="form_item-label" for="description">descripcion</label>
+                        <input class="form_item-input" name="description" formControlName="description" type="textarea" />
+                    </div>
+                    
+                    <div class="form_item form_item-services">
+                        <label class="form_item-label" for="services">servicios asociados a la habitacion (separdo por comas ',')</label>
+                        <input class="form_item-input" name="services" formControlName="services" type="text" />
+                    </div>
+                    <div class="form_item form_item-characteristics">
+                        <label class="form_item-label" for="characteristics">caracteristicas de la habitacion (separdo por comas ',')</label>
+                        <input class="form_item-input" name="characteristics" formControlName="characteristics" type="text" />
+                    </div>
+                    <button class="btn form_btnRoom" (click)="newRoomsForHotelonClick()" [disabled]="formGroupRooms.invalid">Guardar habitacion</button>
+                    <div class="form_item-checked">
+                        <img *ngFor="let item of Rooms"  src="https://images.prismic.io/vivaair-cms/4e4cb958-e577-47ba-935c-bfb676040677_marca-de-verificacion.png?auto=compress,format" alt="">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</ng-template>
+
+<ng-template #createUser>
+    <div class="fixed">
+        <div class="user">
+            <app-usser (usserData)="dataUser($event)"></app-usser>
+            <div class="user_checked">
+                <img *ngFor="let item of dataUserForm" src="https://images.prismic.io/vivaair-cms/4e4cb958-e577-47ba-935c-bfb676040677_marca-de-verificacion.png?auto=compress,format" alt="">
+            </div>
+            <div class="user_confirmed">
+                <button (click)="confirmReservation()" class="btn user_confirmed_btn">Completar reserva</button>
+            </div>
+        </div>
     </div>
 </ng-template>

@@ -1,3 +1,16 @@
+
+.welcomeAdmin{
+    margin-bottom: 15px;
+    &-title{
+        color: var(--secondary-color);
+        font-size: 2em;
+        margin: 0;
+    }
+    &-text{
+        color: var(--primary-color);
+    }
+}
+
 .form{
     display: flex;
     flex-direction: column;
@@ -32,5 +45,24 @@
         border: 1px solid var(--secondary-color);
         font-weight: bold;
         color: var(--primary-color);
+    }
+}
+
+.container_admin{
+    &_option{
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        padding: 5px 25px 5px;
+        &-item{
+            background-color: var(--gray-color);
+            padding: 10px;
+            border-top-right-radius: 10px;
+            border-bottom-left-radius: 10px;
+            cursor: pointer;
+            color: var(--primary-color);
+            font-weight: 600;
+            text-decoration: underline;
+        }
     }
 }

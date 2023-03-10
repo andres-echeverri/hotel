@@ -12,6 +12,7 @@ import SwiperCore , {
   Controller,
 } from 'swiper';
 import { BehaviorSubject } from 'rxjs';
+import { GeneralInfoService } from '../../core/services/general-info.service';
 
 SwiperCore.use([
   Navigation,
@@ -33,12 +34,10 @@ SwiperCore.use([
 export class SliderComponent implements OnInit {
 
   @Input() hotels: any;
-
   
-  constructor() { }
+  constructor(public readonly generalInfo: GeneralInfoService) { }
   
   ngOnInit(): void {
-    console.log(this.hotels);
     
   }
   
