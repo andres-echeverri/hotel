@@ -12,7 +12,7 @@
             <div class="form_item">
                 <label class="form_item-label" for="userEmergency">Nombres y apellidos</label>
                 <input class="form_item-input" 
-                        (keyup)="avoidSpecialCharacters($event, 'userEmergency')"
+                        (keyup)="avoidSpecialCharacters($event, 'userEmergency', 'emergencyContact')"
                         name="userEmergency" 
                         formControlName="userEmergency" 
                         type="text" />
@@ -22,7 +22,7 @@
                 <input class="form_item-input" 
                         name="phoneEmergency" 
                         formControlName="phoneEmergency" 
-                        (keyup)="removeLettersInString($event, 'phoneEmergency')"
+                        (keyup)="removeLettersInString($event, 'phoneEmergency', 'emergencyContact')"
                         type="text" />
             </div>
 
@@ -40,7 +40,7 @@
             <div class="form_item">
                 <label class="form_item-label" for="user">Nombres y apellidos</label>
                 <input class="form_item-input" 
-                        (keyup)="avoidSpecialCharacters($event, 'user')"
+                        (keyup)="avoidSpecialCharacters($event, 'user', 'formGroup')"
                         name="user" 
                         formControlName="user" 
                         type="text" />
@@ -99,7 +99,7 @@
                         name="phone" 
                         pattern="[0-9]+"
                         formControlName="phone" 
-                        (keyup)="removeLettersInString($event, 'phone')"
+                        (keyup)="removeLettersInString($event, 'phone', 'formGroup')"
                         type="text" />
             </div>
         </div>

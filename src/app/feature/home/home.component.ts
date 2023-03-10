@@ -1,6 +1,9 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Subscription } from 'rxjs';
+import { cardHotel, room } from 'src/app/core/interfaces/general-info';
 import { GeneralInfoService, Role } from '../../core/services/general-info.service';
+import { user } from '../../core/interfaces/general-info';
 
 
 
@@ -9,29 +12,37 @@ import { GeneralInfoService, Role } from '../../core/services/general-info.servi
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit, OnDestroy {
 
   public formGroup!: FormGroup;
   public formGroupRooms!: FormGroup;
-  listHotel: any;
-  hotels: any;
-  recomendedHotel: any
+  public formEditHotel!: FormGroup;
+  savelistHotel!: cardHotel[];
+  hotels!: cardHotel[];
+  // Lista de hoteles recomendados
+  recomendedHotel!: cardHotel[];
   page!: number;
-  search: boolean = false;
   searchedDestination!: string;
+
+  search: boolean = false;
   textError: boolean = false;
   removeFilter: boolean = false;
-  roomReservation: any;
   buttonReservation: boolean = false;
-  confirmedRoom: any = [];
   showFormLogin: boolean = false
   showFormUser: boolean = false
   showFormNewHotel: boolean = false
   showFormEditHotel: boolean = false
-  Rooms: any = [];
+  showPageAdminReservation: boolean = false;
+
+  listRoomAvailable!: room[];
+  confirmedHotel: cardHotel[] = [];
+  newRooms: room[] = [];
   dataUserForm: any = [];
-  itemSelected: any;
-  showPageAdminReservation = false
+  // hotel seleccionado
+  itemSelected!: cardHotel;
+
+  generalInfoSubscription!: Subscription;
+  loginSubscription!: Subscription;
 
 
   constructor(public readonly generalInfo: GeneralInfoService,
@@ -39,13 +50,19 @@ export class HomeComponent implements OnInit {
 
   ngOnInit(): void {
     this.generalInfo.formReservationInfo$.subscribe(listHotel => {
-      this.listHotel = listHotel;
-      this.hotels = listHotel
+      this.savelistHotel = listHotel;
+      this.hotels = listHotel;
       this.recomendedHotel = listHotel.filter((hotel: any) => hotel.recomendado === true)
-    }).unsubscribe()
+    });
 
     this.buildForm();
     this.buildFormRooms();
+    this.buildFormEditHotel()
+  }
+
+  ngOnDestroy(): void {
+    this.generalInfoSubscription?.unsubscribe();
+    this.loginSubscription?.unsubscribe();
   }
 
   private buildForm() {
@@ -69,17 +86,29 @@ export class HomeComponent implements OnInit {
     });
   }
 
-  SearchDestination(destination: any) {
+  private buildFormEditHotel() {
+    this.formEditHotel = this.formBuilder.group({
+      hotel: [this.itemSelected?.hotel, Validators.required],
+      description: ['', Validators.required],
+      location: ['', Validators.required],
+      addres: ['', Validators.required],
+      recomended: ['', Validators.required],
+      minPrice: ['', Validators.required],
+      available: ['', Validators.required],
+    });
+  }
+
+  SearchDestination(destination: {destination: string, person: string, registeredOff: string, registeredOn: string}) {
     this.searchedDestination = destination.destination;
     this.search = true;
     this.removeFilter = true;
     this.searchedDestination = destination.destination;
-    this.hotels = this.listHotel.filter((resp: any) => resp.ubicacion.toUpperCase() === destination.destination.toUpperCase());
+    this.hotels = this.savelistHotel.filter((resp: any) => resp.ubicacion.toUpperCase() === destination.destination.toUpperCase());
     this.textError = this.hotels.length === 0;
   } 
 
   removeFilterOnClick(){
-    this.hotels = this.listHotel;
+    this.hotels = this.savelistHotel;
     this.textError = false;
     this.removeFilter = false;
     this.search = false;
@@ -87,16 +116,17 @@ export class HomeComponent implements OnInit {
 
   reservationonClick(item: any){
     this.generalInfo.login$.subscribe((login: Role) => {
+      this.itemSelected = item;
+      console.log(this.itemSelected);
       if(login == 'user'){
-        this.itemSelected = item;
-        this.roomReservation = item.habitaciones;
+        this.listRoomAvailable = item.habitaciones;
         this.buttonReservation = !this.buttonReservation
       }else if(login == 'admin'){
-        console.log("edit hotel");
+        this.editHotels()
       }else{
         this.showFormLogin = !this.showFormLogin 
       }
-    })
+    });
   }
 
   showPageActive(event: string){
@@ -119,7 +149,7 @@ export class HomeComponent implements OnInit {
 
   newHotel(){
     const data = this.formGroup.value;
-    const newHotel = {
+    const newHotel: cardHotel = {
       image: "https://images.prismic.io/vivaair-cms/530da708-3d56-4ccf-ac79-a3937ad0e8de_barrio-san-blas.png?auto=compress,format",
       hotel: data?.hotel,
       descripcion: data?.description,
@@ -127,17 +157,61 @@ export class HomeComponent implements OnInit {
       direccion: data?.addres,
       recomendado: data?.recomended,
       userReservation: [],
+      availability: true,
       minPrice: parseInt(data?.minPrice),
-      habitaciones: this.Rooms
+      habitaciones: this.newRooms
     }
-    this.listHotel.unshift(newHotel)
+    this.hotels.unshift(newHotel)
     this.showFormNewHotel = false;
-    this.generalInfo.setFormReservationInfo(this.listHotel)
+    this.generalInfo.setFormReservationInfo(this.hotels)
     
   }
 
-  editHotel(){
-    console.log("Editar hoteles");
+  editHotels(){
+    console.log(this.itemSelected);
+    
+    this.showFormEditHotel = !this.showFormEditHotel;
+    if(this.showFormEditHotel === true){
+      this.formEditHotel.patchValue({
+        ['hotel']: this.itemSelected?.hotel,
+      });
+      this.formEditHotel.patchValue({
+        ['description']: this.itemSelected?.descripcion,
+      });
+      this.formEditHotel.patchValue({
+        ['addres']: this.itemSelected?.direccion,
+      });
+      this.formEditHotel.patchValue({
+        ['minPrice']: this.itemSelected?.minPrice,
+      });
+      this.formEditHotel.patchValue({
+        ['recomended']: this.itemSelected?.recomendado,
+      });
+      this.formEditHotel.patchValue({
+        ['location']: this.itemSelected?.ubicacion,
+      });
+      this.formEditHotel.patchValue({
+        ['available']: this.itemSelected?.availability,
+      });
+    }else{
+      const indice: number = this.hotels.indexOf(this.itemSelected);
+      const data = this.formEditHotel.value;
+      const editHotel: cardHotel = {
+        image: "https://images.prismic.io/vivaair-cms/530da708-3d56-4ccf-ac79-a3937ad0e8de_barrio-san-blas.png?auto=compress,format",
+        hotel: data?.hotel,
+        descripcion: data?.description,
+        ubicacion: data?.location,
+        direccion: data?.addres,
+        recomendado: data?.recomended,
+        availability: data?.available,
+        minPrice: parseInt(data?.minPrice),
+        habitaciones: this.itemSelected?.habitaciones,
+        userReservation: this.itemSelected?.userReservation,
+      }
+      this.hotels[indice] = editHotel;
+      this.generalInfo.setFormReservationInfo(this.hotels)
+    }
+
     
   }
 
@@ -150,12 +224,14 @@ export class HomeComponent implements OnInit {
       servicios: room?.services.split(','),
       caracteristicas: room?.characteristics.split(',')
     }
-    this.Rooms.push(newRooms)
+    this.newRooms.push(newRooms)
     this.formGroupRooms.reset()
   }
 
-  dataUser(data: any){
+  dataUser(data: user){
     this.dataUserForm.push(data)
+    console.log(this.dataUserForm);
+    
     
   }
 
@@ -164,9 +240,9 @@ export class HomeComponent implements OnInit {
       this.showFormUser = true
     }else{
       this.itemSelected.userReservation = this.itemSelected.userReservation.concat(this.dataUserForm)
-      this.confirmedRoom.push(this.itemSelected);
+      this.confirmedHotel.push(this.itemSelected);
       this.dataUserForm = [];
-      this.generalInfo.setFormConfirmedReservationRoomInfo(this.confirmedRoom)
+      this.generalInfo.setFormConfirmedReservationRoomInfo(this.confirmedHotel)
       this.showFormUser = !this.showFormUser;
       this.buttonReservation = !this.buttonReservation
     }

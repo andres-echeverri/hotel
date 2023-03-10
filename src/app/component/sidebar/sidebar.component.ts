@@ -35,7 +35,7 @@ export class SidebarComponent implements OnInit {
     });
   }
 
-  showReservationActive(){
+  public showReservationActive(){
     if(this.flagShowReservation === false){
       this.showReservation.emit("showReservation")
       this.flagShowReservation = true;
@@ -45,7 +45,7 @@ export class SidebarComponent implements OnInit {
     }
   }
 
-  newHotelOnClick(){
+  public newHotelOnClick(){
     this.showNewHotel.emit()
   }
 

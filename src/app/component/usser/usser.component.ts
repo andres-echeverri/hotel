@@ -54,7 +54,7 @@ export class UsserComponent implements OnInit {
     this.emergencyContactSuccess = !this.emergencyContactSuccess;
   }
 
-  avoidSpecialCharacters(e: KeyboardEvent, formControlName: string): void {
+  avoidSpecialCharacters(e: KeyboardEvent, formControlName: string, form: string): void {
     const { value } = e.target as HTMLInputElement;
     let newVal;
     newVal = this.stringTransformService.removeSpecialCharacters(value);
@@ -62,16 +62,29 @@ export class UsserComponent implements OnInit {
     newVal = this.stringTransformService.removeAccents(newVal);
     newVal = this.stringTransformService.capitalizeFirst(newVal);
 
+    if(form === 'emergencyContact'){
+      this.emergencyContact.patchValue({
+        [formControlName]: newVal,
+      });
+      return;
+    }
     this.formGroup.patchValue({
       [formControlName]: newVal,
     });
   }
 
 
-  removeLettersInString(e: KeyboardEvent, formControlName: string): void {
+  removeLettersInString(e: KeyboardEvent, formControlName: string, form: string): void {
     const { value } = e.target as HTMLInputElement;
     const newVal = value.replace(/[^0-9]/g, '').replace(/\s\s+/g, '');
 
+    if(form === 'emergencyContact'){
+      this.emergencyContact.patchValue({
+        [formControlName]: newVal,
+      });
+      return;
+    }
+    
     this.formGroup.patchValue({
       [formControlName]: newVal,
     });

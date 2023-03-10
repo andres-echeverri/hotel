@@ -19,8 +19,9 @@ export class GeneralInfoService {
       descripcion: "El Baluarte Cartagena Hotel Boutique ofrece habitaciones y apartamentos de servicio completo con WiFi gratuita y alberga una terraza tropical en la azotea con bañera de hidromasaje. El establecimiento se encuentra en el centro histórico de Bocagrande, a poca distancia del mar Caribe.",
       ubicacion: "Cartagena",
       direccion: "Bocagrande",
-      recomendado: true,
+      recomendado: false,
       userReservation: [],
+      availability: false,
       minPrice: 100900,
       habitaciones: [
         {
@@ -76,11 +77,12 @@ export class GeneralInfoService {
       direccion: "Bocagrande",
       recomendado: true,
       minPrice: 100900,
+      availability: true,
       userReservation: [],
       habitaciones: [
         {
           tipo: "suite",
-          descripcion: "",
+          descripcion: "El Hotel Regatta se encuentra frente a la playa de Cartagena, cerca del centro histórico, y ofrece habitaciones con decoración alegre, WiFi gratis y vistas panorámicas al océano. Hay piscina en la azotea y se ofrec",
           precio: 319000,
           servicios: [
             'Actividades infantiles (Ideal para niños / familias)',
@@ -109,6 +111,7 @@ export class GeneralInfoService {
       direccion: "El rodadero",
       recomendado: true,
       userReservation: [],
+      availability: true,
       minPrice: 100900,
       habitaciones: [
         {
@@ -142,6 +145,7 @@ export class GeneralInfoService {
       direccion: "El rodadero",
       recomendado: true,
       minPrice: 100900,
+      availability: true,
       userReservation: [],
       habitaciones: [
         {
@@ -176,6 +180,7 @@ export class GeneralInfoService {
       recomendado: false,
       minPrice: 100900,
       userReservation: [],
+      availability: true,
       habitaciones: [
         {
           tipo: "suite",
