@@ -14,7 +14,7 @@ export class HomeComponent implements OnInit {
   public formGroup!: FormGroup;
   public formGroupRooms!: FormGroup;
   listHotel: any;
-  hotel: any;
+  hotels: any;
   recomendedHotel: any
   page!: number;
   search: boolean = false;
@@ -25,9 +25,13 @@ export class HomeComponent implements OnInit {
   buttonReservation: boolean = false;
   confirmedRoom: any = [];
   showFormLogin: boolean = false
+  showFormUser: boolean = false
   showFormNewHotel: boolean = false
   showFormEditHotel: boolean = false
-  Rooms: any = []
+  Rooms: any = [];
+  dataUserForm: any = [];
+  itemSelected: any;
+  showPageAdminReservation = false
 
 
   constructor(public readonly generalInfo: GeneralInfoService,
@@ -36,9 +40,9 @@ export class HomeComponent implements OnInit {
   ngOnInit(): void {
     this.generalInfo.formReservationInfo$.subscribe(listHotel => {
       this.listHotel = listHotel;
-      this.hotel = listHotel
+      this.hotels = listHotel
       this.recomendedHotel = listHotel.filter((hotel: any) => hotel.recomendado === true)
-    })
+    }).unsubscribe()
 
     this.buildForm();
     this.buildFormRooms();
@@ -70,12 +74,12 @@ export class HomeComponent implements OnInit {
     this.search = true;
     this.removeFilter = true;
     this.searchedDestination = destination.destination;
-    this.hotel = this.listHotel.filter((resp: any) => resp.ubicacion.toUpperCase() === destination.destination.toUpperCase());
-    this.textError = this.hotel.length === 0;
+    this.hotels = this.listHotel.filter((resp: any) => resp.ubicacion.toUpperCase() === destination.destination.toUpperCase());
+    this.textError = this.hotels.length === 0;
   } 
 
   removeFilterOnClick(){
-    this.hotel = this.listHotel;
+    this.hotels = this.listHotel;
     this.textError = false;
     this.removeFilter = false;
     this.search = false;
@@ -84,6 +88,7 @@ export class HomeComponent implements OnInit {
   reservationonClick(item: any){
     this.generalInfo.login$.subscribe((login: Role) => {
       if(login == 'user'){
+        this.itemSelected = item;
         this.roomReservation = item.habitaciones;
         this.buttonReservation = !this.buttonReservation
       }else if(login == 'admin'){
@@ -94,15 +99,14 @@ export class HomeComponent implements OnInit {
     })
   }
 
-  confirmReservation(item: any){
-    this.confirmedRoom.push(item)
-    this.generalInfo.setFormConfirmedReservationRoomInfo(this.confirmedRoom)
-    console.log("this.confirmedRoom",this.confirmedRoom);
-    this.buttonReservation = !this.buttonReservation
+  showPageActive(event: string){
+    this.showPageAdminReservation = !this.showPageAdminReservation;
+    
   }
 
   login(checkLogin: boolean){
-    this.showFormLogin = checkLogin
+    this.showFormLogin = checkLogin;
+    this.showPageAdminReservation = false;
   }
 
   closeModalLogin(){
@@ -122,11 +126,11 @@ export class HomeComponent implements OnInit {
       ubicacion: data?.location,
       direccion: data?.addres,
       recomendado: data?.recomended,
+      userReservation: [],
       minPrice: parseInt(data?.minPrice),
       habitaciones: this.Rooms
     }
     this.listHotel.unshift(newHotel)
-    console.log(this.listHotel);
     this.showFormNewHotel = false;
     this.generalInfo.setFormReservationInfo(this.listHotel)
     
@@ -147,8 +151,26 @@ export class HomeComponent implements OnInit {
       caracteristicas: room?.characteristics.split(',')
     }
     this.Rooms.push(newRooms)
-    console.log(this.Rooms);
     this.formGroupRooms.reset()
+  }
+
+  dataUser(data: any){
+    this.dataUserForm.push(data)
+    
+  }
+
+  confirmReservation(){
+    if(this.showFormUser === false){
+      this.showFormUser = true
+    }else{
+      this.itemSelected.userReservation = this.itemSelected.userReservation.concat(this.dataUserForm)
+      this.confirmedRoom.push(this.itemSelected);
+      this.dataUserForm = [];
+      this.generalInfo.setFormConfirmedReservationRoomInfo(this.confirmedRoom)
+      this.showFormUser = !this.showFormUser;
+      this.buttonReservation = !this.buttonReservation
+    }
+    
   }
 
 }

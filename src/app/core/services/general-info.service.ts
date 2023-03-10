@@ -10,7 +10,7 @@ export class GeneralInfoService {
   formReservationInfo$: Observable<any>;
   formConfirmedReservationRoomInfo$: Observable<any>;
   login$: Observable<any>;
-  private formLoginInfoSource = new BehaviorSubject<Role>('admin');
+  private formLoginInfoSource = new BehaviorSubject<Role>(null);
   private formConfirmedReservationRoomInfoSource = new BehaviorSubject<[]>([])
   private formReservationInfoSource = new BehaviorSubject<any>([
     {
@@ -20,6 +20,7 @@ export class GeneralInfoService {
       ubicacion: "Cartagena",
       direccion: "Bocagrande",
       recomendado: true,
+      userReservation: [],
       minPrice: 100900,
       habitaciones: [
         {
@@ -75,6 +76,7 @@ export class GeneralInfoService {
       direccion: "Bocagrande",
       recomendado: true,
       minPrice: 100900,
+      userReservation: [],
       habitaciones: [
         {
           tipo: "suite",
@@ -106,6 +108,7 @@ export class GeneralInfoService {
       ubicacion: "Cartagena",
       direccion: "El rodadero",
       recomendado: true,
+      userReservation: [],
       minPrice: 100900,
       habitaciones: [
         {
@@ -139,6 +142,7 @@ export class GeneralInfoService {
       direccion: "El rodadero",
       recomendado: true,
       minPrice: 100900,
+      userReservation: [],
       habitaciones: [
         {
           tipo: "suite",
@@ -171,6 +175,7 @@ export class GeneralInfoService {
       direccion: "El rodadero",
       recomendado: false,
       minPrice: 100900,
+      userReservation: [],
       habitaciones: [
         {
           tipo: "suite",
@@ -211,8 +216,6 @@ export class GeneralInfoService {
   }
 
   setFormConfirmedReservationRoomInfo(reservationRoom: any): void {
-    console.log(reservationRoom);
-    
     this.formConfirmedReservationRoomInfoSource.next(reservationRoom);
   }
 

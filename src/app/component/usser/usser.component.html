@@ -1,0 +1,77 @@
+<div class="user">
+    <div>
+        <h6 class="section-title">Informacion principal del usuario
+            <hr class="line">
+        </h6>
+    </div>
+    <form class="form" [formGroup]="formGroup">
+        <div class="form-container">
+            <div class="form_item">
+                <label class="form_item-label" for="user">Nombres y apellidos</label>
+                <input class="form_item-input" 
+                        (keyup)="avoidSpecialCharacters($event, 'user')"
+                        name="user" 
+                        formControlName="user" 
+                        type="text" />
+            </div>
+            <div class="form_item">
+                <label class="form_item-label" for="date">Fecha de nacimiento</label>
+                <input class="form_item-input" 
+                        name="date" 
+                        formControlName="date" 
+                        type="date" 
+                        min="1923-12-31"
+                        [max]="date" />
+            </div>
+            <div class="form_item">
+                <label class="form_item-label" for="gender">Genero</label>
+                <select formControlName="gender"  class="form_item-input"  id="gender">
+                    <option value="Masculino">Masculino</option>
+                    <option value="Femenino">Femenino</option>
+                </select>
+            </div>
+            <div class="form_item-multiple">
+                <div class="form_item">
+                    <label class="form_item-label" for="typeDocument">Tipo</label>
+                    <select formControlName="typeDocument"  class="form_item-input"  id="typeDocument">
+                        <option value="C.C">C.C</option>
+                        <option value="T.I">T.I</option>
+                        <option value="Pastport">Pastport</option>
+                    </select>
+                </div>
+                <div class="form_item">
+                    <label class="form_item-label" for="document">Documento</label>
+                    <input class="form_item-input" 
+                            name="document"
+                            formControlName="document" 
+                            type="text" />
+                </div>
+            </div>
+        </div>
+        <br>
+        <div>
+            <h6 class="section-title">Informacion adicional
+                <!-- <hr class="line"> -->
+            </h6>
+        </div>
+        <div class="form-container">
+            <div class="form_item">
+                <label class="form_item-label" for="Email">Email</label>
+                <input class="form_item-input" 
+                        name="Email" 
+                        formControlName="Email" 
+                        type="email"/>
+            </div>
+            <div class="form_item">
+                <label class="form_item-label" for="phone">Telefono</label>
+                <input class="form_item-input" 
+                        name="phone" 
+                        pattern="[0-9]+"
+                        formControlName="phone" 
+                        (keyup)="removeLettersInString($event, 'phone')"
+                        type="text" />
+            </div>
+        </div>
+        <button class="btn form_btn" (click)="saveUser()" [disabled]="formGroup.invalid">Guardar</button>
+    </form>
+</div>

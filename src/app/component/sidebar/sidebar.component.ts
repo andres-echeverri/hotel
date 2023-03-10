@@ -12,9 +12,10 @@ export class SidebarComponent implements OnInit {
   public formGroup!: FormGroup;
   date!: string;
   reservationRooms!: any;
+  flagShowReservation: boolean = false
   @Output() searchHotel = new EventEmitter();
   @Output() showNewHotel = new EventEmitter();
-  @Output() showEditHotel = new EventEmitter();
+  @Output() showReservation = new EventEmitter();
 
   constructor( private formBuilder: FormBuilder,
                 public generalInfo:GeneralInfoService ) { }
@@ -34,26 +35,23 @@ export class SidebarComponent implements OnInit {
     });
   }
 
-  showReservation(){
-    this.generalInfo.formConfirmedReservationRoomInfo$.subscribe((listItems: any) => {
-
-      this.reservationRooms = listItems;
-      this.reservationRooms.length === 0? console.log("no hay nada") : console.log("hay ", this.reservationRooms);
-    }).unsubscribe();
+  showReservationActive(){
+    if(this.flagShowReservation === false){
+      this.showReservation.emit("showReservation")
+      this.flagShowReservation = true;
+    }else{
+      this.showReservation.emit("showListHotel")
+      this.flagShowReservation = false
+    }
   }
 
   newHotelOnClick(){
     this.showNewHotel.emit()
   }
 
-  editHotelOnClick(){
-    this.showEditHotel.emit()
-  }
-
   public search() {
-    const user = this.formGroup.value;
-    console.log(user);
-    this.searchHotel.emit(user)
+    const search = this.formGroup.value;
+    this.searchHotel.emit(search)
   }
 
 }

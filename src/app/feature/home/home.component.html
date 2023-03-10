@@ -3,12 +3,14 @@
 <app-slider [hotels]="recomendedHotel"></app-slider>
 <div class="home container">
     <app-sidebar (searchHotel)="SearchDestination($event)"
-                (showNewHotel)="showNewHotel()"></app-sidebar>
+                (showNewHotel)="showNewHotel()"
+                (showReservation)="showPageActive($event)"></app-sidebar>
     <div class="home_container">
         <ng-container  [ngTemplateOutlet]="descriptionCardHotel"></ng-container>
         <ng-container *ngIf="buttonReservation"  [ngTemplateOutlet]="rooms"></ng-container>
         <ng-container *ngIf="showFormLogin" [ngTemplateOutlet]="loginForm"></ng-container>
         <ng-container *ngIf="showFormNewHotel" [ngTemplateOutlet]="createHotel"></ng-container>
+        <ng-container *ngIf="showFormUser" [ngTemplateOutlet]="createUser"></ng-container>
     </div>
 </div>
 
@@ -23,36 +25,62 @@
             <hr class="line">
         </h2>
     </div>
-    <div class="card" *ngFor="let item of hotel | paginate: { itemsPerPage: 4, currentPage: page }">
-        <div class="card_img">
-            <img src="https://images.prismic.io/vivaair-cms-test/16236f6a-df01-47f8-8917-bda9aafa1564_Foto+blog+%E2%80%93+movil.jpg?auto=compress,format" alt="">
+    <div *ngIf="!showPageAdminReservation">
+        <div class="card" *ngFor="let item of showPageAdminReservation ? (generalInfo.formConfirmedReservationRoomInfo$ | async): hotels | paginate: { itemsPerPage: 4, currentPage: page }">
+            <div class="card_img">
+                <img src="https://images.prismic.io/vivaair-cms-test/16236f6a-df01-47f8-8917-bda9aafa1564_Foto+blog+%E2%80%93+movil.jpg?auto=compress,format" alt="">
+            </div>
+            <div class="card_description">
+                <div class="card_description_text">
+                    <h4 class="card_description_text-title">{{ item?.hotel }}</h4>
+                    <div class="card_description_text-direccion">
+                        <img  class="card_description_text-direccion-icon" src="https://images.prismic.io/vivaair-cms/47752211-5a59-40f2-9a17-43d23b21947c_destino.png?auto=compress,format" alt="">
+                        <p class="card_description_text-direccion-p">{{ item?.direccion }}</p>
+                    </div>
+                    <p class="card_description_text-p">{{ item?.descripcion }}</p>
+                </div>
+                <div class="card_description_action">
+                    <div>
+                        <span>Precios a partir de</span>
+                        <h6 class="card_description_action-price"><span>COP</span> {{item?.minPrice | currency: 'COP' :'' }}</h6>
+                        <span>Por persona y noche</span>
+                    </div>
+                    <div>
+                        <button class="btn card_description_action-btn" (click)="reservationonClick(item)">{{ (generalInfo.login$ | async) === 'admin' ? 'editar': 'Reservar'}}</button>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="card_description">
-            <div class="card_description_text">
-                <h4 class="card_description_text-title">{{ item?.hotel }}</h4>
-                <div class="card_description_text-direccion">
-                    <img  class="card_description_text-direccion-icon" src="https://images.prismic.io/vivaair-cms/47752211-5a59-40f2-9a17-43d23b21947c_destino.png?auto=compress,format" alt="">
-                    <p class="card_description_text-direccion-p">{{ item?.direccion }}</p>
-                </div>
-                <p class="card_description_text-p">{{ item?.descripcion }}</p>
-            </div>
-            <div class="card_description_action">
-                <div>
-                    <span>Precios a partir de</span>
-                    <h6 class="card_description_action-price"><span>COP</span> {{item?.minPrice | currency: 'COP' :'' }}</h6>
-                    <span>Por persona y noche</span>
-                </div>
-                <div>
-                    <button class="btn card_description_action-btn" (click)="reservationonClick(item)">{{ (generalInfo.login$ | async) === 'admin' ? 'editar': 'Reservar'}}</button>
-                </div>
-            </div>
+        <div *ngIf="!textError" class="card_pagination">
+            <pagination-controls 
+                (pageChange)="page = $event" 
+                previousLabel=" "
+                nextLabel=" "></pagination-controls>
         </div>
     </div>
-    <div *ngIf="!textError" class="card_pagination">
-        <pagination-controls 
-            (pageChange)="page = $event" 
-            previousLabel=" "
-            nextLabel=" "></pagination-controls>
+
+    <div *ngIf="showPageAdminReservation">
+        <div class="card" *ngFor="let item of (generalInfo.formConfirmedReservationRoomInfo$ | async)">
+            <div class="card_img">
+                <img src="https://images.prismic.io/vivaair-cms-test/16236f6a-df01-47f8-8917-bda9aafa1564_Foto+blog+%E2%80%93+movil.jpg?auto=compress,format" alt="">
+            </div>
+            <div class="card_description">
+                <div class="card_description_text">
+                    <h4 class="card_description_text-title">{{ item?.hotel }}</h4>
+                    <div class="card_description_text-direccion">
+                        <img  class="card_description_text-direccion-icon" src="https://images.prismic.io/vivaair-cms/47752211-5a59-40f2-9a17-43d23b21947c_destino.png?auto=compress,format" alt="">
+                        <p class="card_description_text-direccion-p">{{ item?.direccion }}</p>
+                    </div>
+                    <p class="card_description_text-p">{{ item?.descripcion }}</p>
+                </div>
+                <div class="card_description_user">
+                    <p class="card_description_user-title">Usuarios de la reserva</p>
+                    <div class="card_description_user-list" *ngFor="let item of item?.userReservation">
+                        <span>{{item?.user}}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </ng-template>
 
@@ -92,7 +120,7 @@
                             <span>Por persona y noche</span>
                         </div>
                         <div>
-                            <button class="btn card_description_action-btn" (click)="confirmReservation(item)">Reservar</button>
+                            <button class="btn card_description_action-btn" (click)="confirmReservation()">Reservar</button>
                         </div>
                     </div>
                 </div>
@@ -167,6 +195,20 @@
                         <img *ngFor="let item of Rooms"  src="https://images.prismic.io/vivaair-cms/4e4cb958-e577-47ba-935c-bfb676040677_marca-de-verificacion.png?auto=compress,format" alt="">
                     </div>
                 </form>
+            </div>
+        </div>
+    </div>
+</ng-template>
+
+<ng-template #createUser>
+    <div class="fixed">
+        <div class="user">
+            <app-usser (usserData)="dataUser($event)"></app-usser>
+            <div class="user_checked">
+                <img *ngFor="let item of dataUserForm" src="https://images.prismic.io/vivaair-cms/4e4cb958-e577-47ba-935c-bfb676040677_marca-de-verificacion.png?auto=compress,format" alt="">
+            </div>
+            <div class="user_confirmed">
+                <button (click)="confirmReservation()" class="btn user_confirmed_btn">Completar reserva</button>
             </div>
         </div>
     </div>

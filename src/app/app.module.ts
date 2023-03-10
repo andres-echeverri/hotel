@@ -11,6 +11,7 @@ import { SliderComponent } from './component/slider/slider.component';
 import { SwiperModule } from 'swiper/angular';
 import {NgxPaginationModule} from 'ngx-pagination';
 import { ReactiveFormsModule } from '@angular/forms';
+import { UsserComponent } from './component/usser/usser.component';
 
 
 @NgModule({
@@ -21,6 +22,7 @@ import { ReactiveFormsModule } from '@angular/forms';
     SidebarComponent,
     HeaderComponent,
     SliderComponent,
+    UsserComponent,
   ],
   imports: [
     BrowserModule,

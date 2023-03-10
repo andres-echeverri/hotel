@@ -18,7 +18,6 @@ export class HeaderComponent implements OnInit {
 
   loginOnClick(){
     this.generalInfo.login$.subscribe(loguin => {
-      console.log(loguin);
       if(loguin === 'admin' || loguin === 'user'){
         this.generalInfo.setFormLoginInfo(null)
       }else{
