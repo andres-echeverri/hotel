@@ -10,8 +10,10 @@ import { StringTransformService } from '../../core/services/string-transform.ser
 export class UsserComponent implements OnInit {
 
   public formGroup!: FormGroup;
+  public emergencyContact!: FormGroup;
   @Output() usserData = new EventEmitter();
   date!: string;
+  emergencyContactSuccess: boolean = false;
 
   constructor(private readonly formBuilder: FormBuilder,
               private readonly stringTransformService: StringTransformService) { }
@@ -19,7 +21,8 @@ export class UsserComponent implements OnInit {
   ngOnInit(): void {
     const dateLength = 10;
     this.date = new Date().toISOString().substring(0, dateLength);
-    this.buildForm()
+    this.buildForm();
+    this.buildEmergencyContact();
   }
 
   private buildForm() {
@@ -34,13 +37,24 @@ export class UsserComponent implements OnInit {
     });
   }
 
+  private buildEmergencyContact() {
+    this.emergencyContact = this.formBuilder.group({
+      userEmergency: ['', Validators.required],
+      phoneEmergency: ['', Validators.required],
+    });
+  }
+
   saveUser(){
     const data = this.formGroup.value;
     this.usserData.emit(data)
     this.formGroup.reset()
   }
 
-  avoidSpecialCharacters(e: KeyboardEvent, formControlName: string): void {
+  saveEmergencyContact(){
+    this.emergencyContactSuccess = !this.emergencyContactSuccess;
+  }
+
+  avoidSpecialCharacters(e: KeyboardEvent, formControlName: string, form: string): void {
     const { value } = e.target as HTMLInputElement;
     let newVal;
     newVal = this.stringTransformService.removeSpecialCharacters(value);
@@ -48,16 +62,29 @@ export class UsserComponent implements OnInit {
     newVal = this.stringTransformService.removeAccents(newVal);
     newVal = this.stringTransformService.capitalizeFirst(newVal);
 
+    if(form === 'emergencyContact'){
+      this.emergencyContact.patchValue({
+        [formControlName]: newVal,
+      });
+      return;
+    }
     this.formGroup.patchValue({
       [formControlName]: newVal,
     });
   }
 
 
-  removeLettersInString(e: KeyboardEvent, formControlName: string): void {
+  removeLettersInString(e: KeyboardEvent, formControlName: string, form: string): void {
     const { value } = e.target as HTMLInputElement;
     const newVal = value.replace(/[^0-9]/g, '').replace(/\s\s+/g, '');
 
+    if(form === 'emergencyContact'){
+      this.emergencyContact.patchValue({
+        [formControlName]: newVal,
+      });
+      return;
+    }
+    
     this.formGroup.patchValue({
       [formControlName]: newVal,
     });

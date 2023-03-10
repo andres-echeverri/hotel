@@ -25,10 +25,9 @@
             grid-template-columns: 1fr 1fr 10% 1fr;
             gap: 10px;
             justify-content: space-around;
+            align-items: center;
         }
-        &_rooms{
-            height: auto;
-        }
+
         &_item{
             display: flex;
             flex-direction: column;
@@ -65,9 +64,11 @@
             right: 50px;
             bottom: 35px;
         }
-        &_btnRoom{
+
+        &_emergencyContact_btn{
             background-color: var(--gray-color);
             width: 70%;
+            height: 40px;
             margin: 0 auto;
             border: 1px solid var(--secondary-color);
             font-weight: bold;

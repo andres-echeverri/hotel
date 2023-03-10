@@ -11,7 +11,6 @@ export class SidebarComponent implements OnInit {
 
   public formGroup!: FormGroup;
   date!: string;
-  reservationRooms!: any;
   flagShowReservation: boolean = false
   @Output() searchHotel = new EventEmitter();
   @Output() showNewHotel = new EventEmitter();
@@ -35,7 +34,7 @@ export class SidebarComponent implements OnInit {
     });
   }
 
-  showReservationActive(){
+  public showReservationActive(){
     if(this.flagShowReservation === false){
       this.showReservation.emit("showReservation")
       this.flagShowReservation = true;
@@ -45,7 +44,7 @@ export class SidebarComponent implements OnInit {
     }
   }
 
-  newHotelOnClick(){
+  public newHotelOnClick(){
     this.showNewHotel.emit()
   }
 
