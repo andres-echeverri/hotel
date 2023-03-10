@@ -221,6 +221,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       tipo: room?.type,
       descripcion: room?.description,
       precio: parseInt(room?.price),
+      tax: '19',
       servicios: room?.services.split(','),
       caracteristicas: room?.characteristics.split(',')
     }

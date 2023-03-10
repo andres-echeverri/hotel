@@ -4,7 +4,7 @@ export interface cardHotel {
     descripcion: string,
     ubicacion: string,
     direccion: string,
-    recomendado: string,
+    recomendado: boolean,
     userReservation: user[],
     availability: boolean,
     minPrice: number,
@@ -14,6 +14,7 @@ export interface cardHotel {
   export interface room {
     tipo: string,
     descripcion: string,
+    tax: string,
     precio: number,
     servicios: string[],
     caracteristicas: string[]

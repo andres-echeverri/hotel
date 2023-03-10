@@ -11,7 +11,6 @@ export class SidebarComponent implements OnInit {
 
   public formGroup!: FormGroup;
   date!: string;
-  reservationRooms!: any;
   flagShowReservation: boolean = false
   @Output() searchHotel = new EventEmitter();
   @Output() showNewHotel = new EventEmitter();

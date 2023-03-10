@@ -13,6 +13,7 @@ import SwiperCore , {
 } from 'swiper';
 import { BehaviorSubject } from 'rxjs';
 import { GeneralInfoService } from '../../core/services/general-info.service';
+import { cardHotel } from '../../core/interfaces/general-info';
 
 SwiperCore.use([
   Navigation,
@@ -33,7 +34,7 @@ SwiperCore.use([
 })
 export class SliderComponent implements OnInit {
 
-  @Input() hotels: any;
+  @Input() hotels!: cardHotel[];
   
   constructor(public readonly generalInfo: GeneralInfoService) { }
   
