@@ -1,5 +1,36 @@
 <div class="user">
     <div>
+        <h6 class="section-title">Contacto de emergencia
+            <!-- <hr class="line"> -->
+        </h6>
+    </div>
+    <div *ngIf="emergencyContactSuccess">
+        <p>Contacto guardado</p>
+    </div>
+    <form *ngIf="!emergencyContactSuccess" class="form" [formGroup]="emergencyContact">
+        <div class="form-container">
+            <div class="form_item">
+                <label class="form_item-label" for="userEmergency">Nombres y apellidos</label>
+                <input class="form_item-input" 
+                        (keyup)="avoidSpecialCharacters($event, 'userEmergency')"
+                        name="userEmergency" 
+                        formControlName="userEmergency" 
+                        type="text" />
+            </div>
+            <div class="form_item">
+                <label class="form_item-label" for="phoneEmergency">Telefono</label>
+                <input class="form_item-input" 
+                        name="phoneEmergency" 
+                        formControlName="phoneEmergency" 
+                        (keyup)="removeLettersInString($event, 'phoneEmergency')"
+                        type="text" />
+            </div>
+
+            <button class="btn form_emergencyContact_btn" (click)="saveEmergencyContact()" [disabled]="emergencyContact.invalid">Guardar</button>
+        </div>
+    </form>
+    <br>
+    <div>
         <h6 class="section-title">Informacion principal del usuario
             <hr class="line">
         </h6>
@@ -74,4 +105,5 @@
         </div>
         <button class="btn form_btn" (click)="saveUser()" [disabled]="formGroup.invalid">Guardar</button>
     </form>
+
 </div>
